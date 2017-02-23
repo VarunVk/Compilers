@@ -1,0 +1,21 @@
+/*checking for multi-level comments
+/* 2nd
+/* 3rd
+/* 4th
+/* 5th
+*/5th
+*/4th
+*/3rd
+*/2nd
+*/
+
+let
+        var a:= 0
+in
+        for i:=0 to 100 do (a:=a+1;
+                print ("i asdsadm trying to write a I forgot some thing"))
+                print ("i asdsadm trying to write a I forgot some thing"))
+                print ("i asdsadm trying to write a I forgot some thing"))
+end
+
+

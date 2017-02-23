@@ -1,0 +1,51 @@
+1. Solution to this is in the file slp.sml, you have run:-
+	use "slp.sml";
+	open Interpreter; 
+	
+	Give the prog, prog2 and prog3.
+
+	maxargs prog;
+	interp prog; 
+
+2. 2.a Answer to this the following structures(which is also present in the file SymTblFct.sml) 
+			signature IntMapSig=
+			sig
+			  type 'a map
+			  exception NotFound
+			  val apply: 'a map * int -> 'a
+			  val update: 'a map * int * 'a -> 'a map 
+			  val emptyMap: 'a map 
+			end;
+			
+			signature ValSig =
+			sig
+			  type value
+			end;
+			
+			signature SymSig=
+			sig
+			  eqtype sym 
+			  val hash: sym -> int 
+			end;
+	
+   2b. functors are present in the file SymTblFct.sml
+			functor SymFct():SymSig=
+			struct 
+			       type sym= string 
+			       fun hash (a:sym) = 3 
+			end 
+			
+			functor ValFct():ValSig=
+			struct 
+			       type value = int 
+			end 
+
+	2c. There is problem in structure Lex = LexFct(SymFct()), as a functor cannot be called using another functor. 
+		Functors cannot take functors as arguments, nor can they produce functors as results.  		
+
+    3. signature SymTblSig is defined in SymTblFct.sml. So that the functor returns a structure which has the signature SymTblSig. 
+
+    4. By the principle that you can include structures in structures, along with types, values and exceptions. By making it more generic, and including the structures
+	 	inside the structures(sub structures).
+
+3. Present in the file btree.sml 	
