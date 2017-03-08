@@ -13,7 +13,7 @@ structure A = Absyn
   | BREAK | NIL
   | FUNCTION | VAR | TYPE 
 
-%nonterm  program | exp
+%nonterm  program | exp | dec | tydec | ty | tyfields | vardec | typeid | fundec | lvalue | funccall | funcparam | letcall | arithexp
 
 %pos int
 %verbose
@@ -36,5 +36,61 @@ structure A = Absyn
 
 program	: exp				()
 
-	
-exp: NIL		()
+exp: dec    ()
+   | lvalue ()
+   | arithexp     ()
+   | funccall  ()
+   | letcall   ()
+   | lvalue ASSIGN exp             ()
+   | IF exp THEN exp ELSE exp      ()
+   | IF exp THEN exp               ()   
+   | WHILE exp DO exp              ()
+   | FOR ID ASSIGN exp TO exp DO exp   ()	   
+   | LBRACE exp SEMICOLON exp RBRACE   ()
+   | NIL    ()
+	    
+dec: tydec		()
+   | fundec             ()
+   | vardec             ()
+   | NIL                ()
+			
+tydec: TYPE ID EQ ty          ()
+
+ty: ID  ()
+   | LBRACE tyfields RBRACE   () 
+   | ARRAY OF ID              ()
+
+tyfields: NIL             ()
+	| ID COLON typeid tyfields ()
+	| COMMA ID COLON typeid tyfields ()
+		
+typeid: INT ()
+      | STRING ()
+      | ID             ()
+
+vardec: VAR ID ASSIGN exp           ()
+      | VAR ID COLON typeid ASSIGN exp   ()
+      | VAR ID COLON typeid ASSIGN typeid LBRACK exp RBRACK OF exp   ()
+
+   
+fundec: FUNCTION ID LPAREN tyfields RPAREN EQ exp   ()
+      | FUNCTION ID LPAREN tyfields RPAREN COLON typeid EQ exp ()
+
+lvalue: ID ()
+      | lvalue DOT ID   ()
+      | lvalue LBRACK exp RBRACK     ()
+
+funccall: ID LBRACE funcparam RBRACE ()
+
+funcparam: exp funcparam   ()
+	 | COMMA exp funcparam  ()
+	 | NIL   ()
+
+letcall: LET dec IN exp END   ()
+
+arithexp: INT    ()
+     | arithexp PLUS arithexp  ()
+     | arithexp MINUS arithexp  ()
+     | arithexp TIMES arithexp  ()
+     | arithexp DIVIDE arithexp  () 
+	   

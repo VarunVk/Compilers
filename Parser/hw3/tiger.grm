@@ -34,7 +34,7 @@ structure A = Absyn
 
 %%
 
-program	: exp				(exp)
+program	: exp				(print exp; exp)
 
 	
 exp: NIL		(A.NilExp)
