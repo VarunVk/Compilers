@@ -1,0 +1,5 @@
+Presently there are no shift/reduce or reduce-reduce errorrs. 
+Most of the shift reduce were handled by rewriting the grammar appropriately. 
+Or by using the precedence and associativity of the grammar in the ml-yacc file.
+One of handling the problem on page 82 as memntioned by the Professor in 
+moodle post is to either use left or right recursion to postpone the processing.
