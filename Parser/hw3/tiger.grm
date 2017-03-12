@@ -14,13 +14,13 @@ structure A = Absyn
   | FUNCTION | VAR | TYPE 
 
 %nonterm  
-expr of A.exp | program of A.exp 
-| lvalue of A.var | lvalueFollow of A.var
-| exprList of A.exp list | exprSeq of (A.exp * A.pos) list
-| decList of A.dec list | declaration of A.dec
-| varDec of A.dec | funDec of A.dec | typeDec of A.dec
-| typeFieldList of A.field list | typeField of A.field | typeVal of A.ty
-| fieldList of (A.symbol * A.exp * int) list
+    expr of A.exp | program of A.exp 
+    | lvalue of A.var | lvalueFollow of A.var
+    | exprList of A.exp list | exprSeq of (A.exp * A.pos) list
+    | decList of A.dec list | declaration of A.dec
+    | varDec of A.dec | funDec of A.dec | typeDec of A.dec
+    | typeFieldList of A.field list | typeField of A.field | typeVal of A.ty
+    | fieldList of (A.symbol * A.exp * int) list
 
 %pos int
 %verbose
@@ -121,7 +121,6 @@ expr:
                                                    body = expr3, 
                                                    pos = FORleft}))
 	| BREAK                       (A.BreakExp(BREAKleft))
-(*	| LET decList IN exprSeq END  (A.LetExp({decs = decList, body = A.SeqExp(exprSeq), pos = LETleft})) *)
 	| LET decList IN expr END     (A.LetExp({decs = decList, body = expr, pos = LETleft})) 
 
 exprList: (* nothing *)   ([])
@@ -129,7 +128,6 @@ exprList: (* nothing *)   ([])
 	|   exprList COMMA expr (exprList @ [expr])
 
 exprSeq:  (* nothing *)             ([])
-(*        |   expr                      ([(expr, exprleft)]) *)
         |   exprSeq SEMICOLON expr    ( exprSeq @ [(expr, exprleft)]) 
 
 fieldList: (* nothing *)              ([])
@@ -144,22 +142,6 @@ declaration: varDec                 (varDec)
           |  funDec                 (funDec)
           |  typeDec                (typeDec)
 
-typeDec: TYPE ID EQ typeVal         (A.TypeDec([{name = Symbol.symbol(ID),
-                                         ty = typeVal,
-                                         pos = TYPEleft}]))
-
-typeVal: ID                           (A.NameTy(Symbol.symbol(ID), IDleft))
-      |  LBRACE typeFieldList RBRACE  (A.RecordTy(typeFieldList))
-      |  ARRAY OF ID                  (A.ArrayTy(Symbol.symbol(ID), ARRAYleft))
-
-funDec: FUNCTION ID LPAREN typeFieldList RPAREN EQ expr
-        (A.FunctionDec[{name = Symbol.symbol(ID), params = typeFieldList,
-                        result = NONE, body = expr, pos = FUNCTIONleft}]) 
-
-      | FUNCTION ID LPAREN typeFieldList RPAREN COLON ID EQ expr
-		(A.FunctionDec[{name = Symbol.symbol(ID1), params = typeFieldList,
-                        result = SOME(Symbol.symbol(ID2), ID2left), 
-                        body = expr, pos = FUNCTIONleft}]) 
  
 varDec: VAR ID ASSIGN expr          (A.VarDec({name = Symbol.symbol(ID),
                                                escape = ref true,
@@ -172,6 +154,23 @@ varDec: VAR ID ASSIGN expr          (A.VarDec({name = Symbol.symbol(ID),
                                                           ID2left),
                                                init = expr,
                                                pos = VARleft}))
+
+funDec: FUNCTION ID LPAREN typeFieldList RPAREN EQ expr
+        (A.FunctionDec[{name = Symbol.symbol(ID), params = typeFieldList,
+                        result = NONE, body = expr, pos = FUNCTIONleft}]) 
+
+      | FUNCTION ID LPAREN typeFieldList RPAREN COLON ID EQ expr
+		(A.FunctionDec[{name = Symbol.symbol(ID1), params = typeFieldList,
+                        result = SOME(Symbol.symbol(ID2), ID2left), 
+                        body = expr, pos = FUNCTIONleft}]) 
+
+typeDec: TYPE ID EQ typeVal         (A.TypeDec([{name = Symbol.symbol(ID),
+                                         ty = typeVal,
+                                         pos = TYPEleft}]))
+
+typeVal: ID                           (A.NameTy(Symbol.symbol(ID), IDleft))
+      |  LBRACE typeFieldList RBRACE  (A.RecordTy(typeFieldList))
+      |  ARRAY OF ID                  (A.ArrayTy(Symbol.symbol(ID), ARRAYleft))
 
 
 typeFieldList: (* nothing *)                  ([])
