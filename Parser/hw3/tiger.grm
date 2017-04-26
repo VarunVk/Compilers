@@ -1,26 +1,37 @@
 structure A = Absyn
 
+fun addToFunctionDec(newType, (A.FunctionDec a)::l) = A.FunctionDec(newType::a)::l
+  | addToFunctionDec(newType, a::l) = A.FunctionDec([])::[]
+  | addToFunctionDec(newType, []) = A.FunctionDec([newType])::[];
+
+fun addToTypeDec(newType, (A.TypeDec a)::l) = A.TypeDec(newType::a)::l
+  | addToTypeDec(newType, a::l) = A.TypeDec([])::[]
+  | addToTypeDec(newType, []) = A.TypeDec([newType])::[];
+
 %%
 %term
-    EOF 
+    EOF
   | ID of string
-  | INT of int | STRING of string 
-  | COMMA | COLON | SEMICOLON | LPAREN | RPAREN | LBRACK | RBRACK 
-  | LBRACE | RBRACE | DOT 
-  | PLUS | MINUS | TIMES | DIVIDE | EQ | NEQ | LT | LE | GT | GE
+  | INT of int | STRING of string
+  | COMMA | COLON | SEMICOLON | LPAREN | RPAREN | LBRACK | RBRACK
+  | LBRACE | RBRACE | DOT
+  | PLUS | MINUS | UMINUS | TIMES | DIVIDE | EQ | NEQ | LT | LE | GT | GE
   | AND | OR | ASSIGN
-  | ARRAY | IF | THEN | ELSE | WHILE | FOR | TO | DO | LET | IN | END | OF 
+  | ARRAY | IF | THEN | ELSE | WHILE | FOR | TO | DO | LET | IN | END | OF
   | BREAK | NIL
-  | FUNCTION | VAR | TYPE 
+  | FUNCTION | VAR | TYPE
 
-%nonterm  
-    expr of A.exp | program of A.exp 
+%nonterm
+    expr of A.exp | program of A.exp
     | lvalue of A.var | lvalueFollow of A.var
-    | exprList of A.exp list | exprSeq of (A.exp * A.pos) list
-    | decList of A.dec list | declaration of A.dec
-    | varDec of A.dec | funDec of A.dec | typeDec of A.dec
+    | exprList of A.exp list | exprSeq of (A.exp * A.pos) list | exprtail of (A.exp * A.pos) list
+    | decList of A.dec list | declaration of A.dec list
+    | varDec of A.dec | funDec of A.dec list | typeDec of A.dec list
     | typeFieldList of A.field list | typeField of A.field | typeVal of A.ty
     | fieldList of (A.symbol * A.exp * int) list
+    | letBody of A.exp
+    | funcArg of A.exp list
+    | funcArgtail of A.exp list
 
 %pos int
 %verbose
@@ -30,30 +41,37 @@ structure A = Absyn
 
 %name Tiger
 
-%keyword WHILE FOR TO BREAK LET IN END FUNCTION VAR TYPE ARRAY IF THEN ELSE 
-	DO OF NIL
+%nonassoc ASSIGN
+%nonassoc ID
+%nonassoc WHILE DO
+%right THEN
+%right ELSE
+%nonassoc LBRACK RBRACK OF
 
-%right ID THEN ELSE DO TO LPAREN LBRACK LBRACE
-%right  ASSIGN
-%right OF
 %left OR
 %left AND
-%nonassoc EQ NEQ GT LT GE LE 
+%nonassoc EQ NEQ GT LT GE LE
 %left PLUS MINUS
 %left TIMES DIVIDE
+%left UMINUS
 
-%prefer THEN ELSE LPAREN ASSIGN
+%keyword WHILE FOR TO BREAK LET IN END FUNCTION VAR TYPE ARRAY IF THEN ELSE
+	DO OF NIL
+
+%prefer THEN ELSE LPAREN
 
 %value ID ("bogus")
 %value INT (0)
 %value STRING ("")
+
+%verbose
 
 %%
 
 program	: expr		(expr)
 
 expr:
-	(* Literals *) 
+	(* Literals *)
 	  NIL			(A.NilExp)
 	| STRING	        (A.StringExp(STRING, STRINGleft))
 	| INT			(A.IntExp(INT))
@@ -76,23 +94,23 @@ expr:
                                       A.SimpleVar(Symbol.symbol(ID), IDleft),
                                       expr1, LBRACKleft),
                               exp = expr2, pos = expr2left}))
-		
+
 	| ID LBRACK expr RBRACK DOT ID ASSIGN expr
                   (A.AssignExp({var = A.FieldVar(
                           A.SubscriptVar(A.SimpleVar(Symbol.symbol(ID1), ID1left),
                           expr1, LBRACKleft),
                           Symbol.symbol(ID2), ID2left),
 				exp = expr2, pos = expr2left}))
-		  
+
 	| lvalue ASSIGN expr    (A.AssignExp({var = lvalue, exp = expr,
                                         pos = lvalueleft}))
 
 	(* Function call *)
-	| ID LPAREN exprList RPAREN   (A.CallExp({func = Symbol.symbol(ID),
-                                            args = exprList, pos = IDleft})) 
+	| ID LPAREN funcArg RPAREN   (A.CallExp({func = Symbol.symbol(ID),
+                                            args = funcArg, pos = IDleft}))
 
-	(* Opertaions *)	
-	| MINUS expr	%prec TIMES	(A.OpExp({left = A.IntExp(0), oper = A.MinusOp, right =  expr, pos = MINUSleft})) 
+	(* Opertaions *)
+	| MINUS expr  %prec UMINUS	(A.OpExp({left = A.IntExp(0), oper = A.MinusOp, right =  expr, pos = MINUSleft}))
 	| expr PLUS   expr		(A.OpExp({left = expr1, oper = A.PlusOp,  right = expr2, pos = expr1left}))
 	| expr MINUS  expr		(A.OpExp({left = expr1, oper = A.MinusOp, right = expr2, pos = expr1left}))
 	| expr TIMES  expr		(A.OpExp({left = expr1, oper = A.TimesOp, right = expr2, pos = expr1left}))
@@ -105,44 +123,47 @@ expr:
 	| expr GE     expr		(A.OpExp({left = expr1, oper = A.GeOp, 	right = expr2, pos = expr1left}))
 	| expr AND    expr		(A.IfExp({test = expr1, then' = expr2, 	else' = SOME(A.IntExp(0)), pos = expr1left }))
 	| expr OR     expr		(A.IfExp({test = expr1, then' = A.IntExp(1), else' = SOME(expr2), pos = expr1left}))
+
+	| LPAREN expr SEMICOLON expr exprtail RPAREN	        (A.SeqExp((expr1, expr1left)::(expr2, expr2left)::exprtail))
+	| LPAREN RPAREN	                                    (A.SeqExp([]))
 	| LPAREN expr RPAREN	        (expr)
-	| LPAREN exprSeq RPAREN	        (A.SeqExp(exprSeq))
 
 	(* Control Statements *)
-	| IF expr THEN expr           (A.IfExp({test = expr1, then' = expr2, 
+	| IF expr THEN expr           (A.IfExp({test = expr1, then' = expr2,
                                           else' = NONE, pos = IFleft}))
 	| IF expr THEN expr ELSE expr (A.IfExp({test = expr1, then' = expr2,
                                           else' = SOME(expr3), pos = IFleft}))
 	| WHILE expr DO expr          (A.WhileExp({test = expr1, body = expr2, pos = WHILEleft}))
 
-	| FOR ID ASSIGN expr TO expr DO expr  (A.ForExp({var = Symbol.symbol(ID), 
+	| FOR ID ASSIGN expr TO expr DO expr  (A.ForExp({var = Symbol.symbol(ID),
                                                    escape = ref true,
                                                    lo = expr1, hi = expr2,
-                                                   body = expr3, 
+                                                   body = expr3,
                                                    pos = FORleft}))
 	| BREAK                       (A.BreakExp(BREAKleft))
-	| LET decList IN expr END     (A.LetExp({decs = decList, body = expr, pos = LETleft})) 
+	| LET decList IN letBody END     (A.LetExp({decs = decList, body = letBody, pos = LETleft}))
 
+    (*
 exprList: (* nothing *)   ([])
 	|   expr            ([expr])
 	|   exprList COMMA expr (exprList @ [expr])
 
 exprSeq:  (* nothing *)             ([])
-        |   exprSeq SEMICOLON expr    ( exprSeq @ [(expr, exprleft)]) 
+        |   exprSeq SEMICOLON expr    ( exprSeq @ [(expr, exprleft)])
+        *)
 
 fieldList: (* nothing *)              ([])
         |  ID EQ expr                 ([(Symbol.symbol(ID), expr, IDleft)])
         |  fieldList COMMA ID EQ expr (fieldList @ [(Symbol.symbol(ID),
                                                      expr, IDleft)])
 
-decList: declaration                ([declaration])
-       | declaration decList        (declaration::decList)
+decList: declaration                (declaration)
+       | declaration decList        (declaration@decList)
 
-declaration: varDec                 (varDec)
+declaration: varDec                 ([varDec])
           |  funDec                 (funDec)
           |  typeDec                (typeDec)
 
- 
 varDec: VAR ID ASSIGN expr          (A.VarDec({name = Symbol.symbol(ID),
                                                escape = ref true,
                                                typ = NONE,
@@ -150,23 +171,37 @@ varDec: VAR ID ASSIGN expr          (A.VarDec({name = Symbol.symbol(ID),
                                                pos = VARleft}))
       | VAR ID COLON ID ASSIGN expr (A.VarDec({name = Symbol.symbol(ID1),
                                                escape = ref true,
-                                               typ = SOME(Symbol.symbol(ID2), 
+                                               typ = SOME(Symbol.symbol(ID2),
                                                           ID2left),
                                                init = expr,
                                                pos = VARleft}))
 
 funDec: FUNCTION ID LPAREN typeFieldList RPAREN EQ expr
         (A.FunctionDec[{name = Symbol.symbol(ID), params = typeFieldList,
-                        result = NONE, body = expr, pos = FUNCTIONleft}]) 
+                        result = NONE, body = expr, pos = FUNCTIONleft}]::[])
 
       | FUNCTION ID LPAREN typeFieldList RPAREN COLON ID EQ expr
 		(A.FunctionDec[{name = Symbol.symbol(ID1), params = typeFieldList,
-                        result = SOME(Symbol.symbol(ID2), ID2left), 
-                        body = expr, pos = FUNCTIONleft}]) 
+                        result = SOME(Symbol.symbol(ID2), ID2left),
+                        body = expr, pos = FUNCTIONleft}]::[])
+
+      | FUNCTION ID LPAREN typeFieldList RPAREN EQ expr funDec
+        (addToFunctionDec({name = Symbol.symbol(ID), params = typeFieldList,
+                        result = NONE, body = expr, pos = FUNCTIONleft}, funDec))
+
+      | FUNCTION ID LPAREN typeFieldList RPAREN COLON ID EQ expr funDec
+		(addToFunctionDec({name = Symbol.symbol(ID1), params = typeFieldList,
+                        result = SOME(Symbol.symbol(ID2), ID2left),
+                        body = expr, pos = FUNCTIONleft}, funDec))
+
 
 typeDec: TYPE ID EQ typeVal         (A.TypeDec([{name = Symbol.symbol(ID),
                                          ty = typeVal,
-                                         pos = TYPEleft}]))
+                                         pos = TYPEleft}])::[])
+       | TYPE ID EQ typeVal typeDec (addToTypeDec({name = Symbol.symbol(ID),
+                                         ty = typeVal,
+                                         pos = TYPEleft}, typeDec))
+
 
 typeVal: ID                           (A.NameTy(Symbol.symbol(ID), IDleft))
       |  LBRACE typeFieldList RBRACE  (A.RecordTy(typeFieldList))
@@ -182,7 +217,30 @@ typeField: ID COLON ID  ({name = Symbol.symbol(ID1),
                           typ = Symbol.symbol(ID2),
                           pos = ID1left})
 
+letBody:  expr              (expr)
+        | expr exprtail     (A.SeqExp((expr, exprleft)::exprtail))
+        |                   (A.NilExp)
+
+
+exprtail : SEMICOLON expr exprtail     ((expr, exprleft)::exprtail)
+        |                           ([])
+
+funcArg :                           ([])
+        | expr funcArgtail          (expr::funcArgtail)
+
+funcArgtail : COMMA expr funcArgtail  (expr::funcArgtail)
+            |                         ([])
+
 lvalue: ID                          (A.SimpleVar(Symbol.symbol(ID), IDleft))
     |   lvalue DOT ID               (A.FieldVar(lvalue, Symbol.symbol(ID), IDleft))
-    |   lvalue LBRACK expr RBRACK   (A.SubscriptVar(lvalue, expr, LBRACKleft))
+    |   lvalue LBRACK expr RBRACK   (A.SubscriptVar(lvalue, expr, lvalueleft))
+    |   ID LBRACK expr RBRACK       (A.SubscriptVar(A.SimpleVar(Symbol.symbol ID, IDleft), expr, IDleft))
 
+(* we need to include this
+lvalue: ID lvalueFollow              (lvalueFollow ID)
+
+lvalueFollow:
+        DOT ID lvalueFollow                 (fn x => (lvalueFollow (A.FieldVar(x, (Symbol.symbol ID), DOTleft))))
+    |   LBRACK expr RBRACK lvalueFollow     (fx x => (lvalueFollow (A.SubscriptVar(x, expr, LBRACKleft))))
+    |                                       (fn x => x)
+*)
