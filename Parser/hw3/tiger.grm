@@ -1,12 +1,12 @@
 structure A = Absyn
 
-fun addToFunctionDec(newType, (A.FunctionDec a)::l) = A.FunctionDec(newType::a)::l
-  | addToFunctionDec(newType, a::l) = A.FunctionDec([])::[]
-  | addToFunctionDec(newType, []) = A.FunctionDec([newType])::[];
+fun FuncList (entry, (A.FunctionDec a)::l) = A.FunctionDec(entry::a)::l
+  | FuncList (entry, a::l) = A.FunctionDec([])::[]
+  | FuncList (entry, []) = A.FunctionDec([entry])::[];
 
-fun addToTypeDec(newType, (A.TypeDec a)::l) = A.TypeDec(newType::a)::l
-  | addToTypeDec(newType, a::l) = A.TypeDec([])::[]
-  | addToTypeDec(newType, []) = A.TypeDec([newType])::[];
+fun TypeList (entry, (A.TypeDec a)::l) = A.TypeDec(entry::a)::l
+  | TypeList (entry, a::l) = A.TypeDec([])::[]
+  | TypeList (entry, []) = A.TypeDec([entry])::[];
 
 %%
 %term
@@ -143,15 +143,6 @@ expr:
 	| BREAK                       (A.BreakExp(BREAKleft))
 	| LET decList IN letBody END     (A.LetExp({decs = decList, body = letBody, pos = LETleft}))
 
-    (*
-exprList: (* nothing *)   ([])
-	|   expr            ([expr])
-	|   exprList COMMA expr (exprList @ [expr])
-
-exprSeq:  (* nothing *)             ([])
-        |   exprSeq SEMICOLON expr    ( exprSeq @ [(expr, exprleft)])
-        *)
-
 fieldList: (* nothing *)              ([])
         |  ID EQ expr                 ([(Symbol.symbol(ID), expr, IDleft)])
         |  fieldList COMMA ID EQ expr (fieldList @ [(Symbol.symbol(ID),
@@ -186,11 +177,11 @@ funDec: FUNCTION ID LPAREN typeFieldList RPAREN EQ expr
                         body = expr, pos = FUNCTIONleft}]::[])
 
       | FUNCTION ID LPAREN typeFieldList RPAREN EQ expr funDec
-        (addToFunctionDec({name = Symbol.symbol(ID), params = typeFieldList,
+        (FuncList({name = Symbol.symbol(ID), params = typeFieldList,
                         result = NONE, body = expr, pos = FUNCTIONleft}, funDec))
 
       | FUNCTION ID LPAREN typeFieldList RPAREN COLON ID EQ expr funDec
-		(addToFunctionDec({name = Symbol.symbol(ID1), params = typeFieldList,
+		(FuncList({name = Symbol.symbol(ID1), params = typeFieldList,
                         result = SOME(Symbol.symbol(ID2), ID2left),
                         body = expr, pos = FUNCTIONleft}, funDec))
 
@@ -198,7 +189,7 @@ funDec: FUNCTION ID LPAREN typeFieldList RPAREN EQ expr
 typeDec: TYPE ID EQ typeVal         (A.TypeDec([{name = Symbol.symbol(ID),
                                          ty = typeVal,
                                          pos = TYPEleft}])::[])
-       | TYPE ID EQ typeVal typeDec (addToTypeDec({name = Symbol.symbol(ID),
+       | TYPE ID EQ typeVal typeDec (TypeList({name = Symbol.symbol(ID),
                                          ty = typeVal,
                                          pos = TYPEleft}, typeDec))
 
@@ -217,13 +208,16 @@ typeField: ID COLON ID  ({name = Symbol.symbol(ID1),
                           typ = Symbol.symbol(ID2),
                           pos = ID1left})
 
-letBody:  expr              (expr)
-        | expr exprtail     (A.SeqExp((expr, exprleft)::exprtail))
-        |                   (A.NilExp)
+letBody:  (* Single expressions will not constitute a SeqExp *)
+          expr                              (expr)
+          (* 2 or more expr will constitute a SeqExp *)
+        | expr SEMICOLON expr exprtail      (A.SeqExp((expr1, expr1left)::(expr2, expr2left)::exprtail))
+          (* Nothing - add NilExp *)
+        |                                   (A.NilExp)
 
 
 exprtail : SEMICOLON expr exprtail     ((expr, exprleft)::exprtail)
-        |                           ([])
+        |                              ([])
 
 funcArg :                           ([])
         | expr funcArgtail          (expr::funcArgtail)
@@ -236,11 +230,10 @@ lvalue: ID                          (A.SimpleVar(Symbol.symbol(ID), IDleft))
     |   lvalue LBRACK expr RBRACK   (A.SubscriptVar(lvalue, expr, lvalueleft))
     |   ID LBRACK expr RBRACK       (A.SubscriptVar(A.SimpleVar(Symbol.symbol ID, IDleft), expr, IDleft))
 
-(* we need to include this
+(*
 lvalue: ID lvalueFollow              (lvalueFollow ID)
 
-lvalueFollow:
-        DOT ID lvalueFollow                 (fn x => (lvalueFollow (A.FieldVar(x, (Symbol.symbol ID), DOTleft))))
-    |   LBRACK expr RBRACK lvalueFollow     (fx x => (lvalueFollow (A.SubscriptVar(x, expr, LBRACKleft))))
-    |                                       (fn x => x)
+lvalueFollow: DOT ID lvalueFollow                 (fn x => (lvalueFollow (A.FieldVar(x, (Symbol.symbol ID), DOTleft))))
+          |   LBRACK expr RBRACK lvalueFollow     (fn x => (lvalueFollow (A.SubscriptVar(x, expr, LBRACKleft))))
+          |                                       (fn x => (A.SimpleVar(Symbol.symbol(x), IDleft)))
 *)
