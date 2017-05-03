@@ -823,7 +823,7 @@ MlyValue.exp exp2, _, _)) :: _ :: ( _, ( MlyValue.exp exp1, _, _)) ::
  val  exp3 = exp3 ()
  in (
 A.ForExp {var = (Symbol.symbol ID), 
-                                   escape = (ref true),
+                                   escape = (ref false),
                                    lo = exp1, hi = exp2, body = exp3, 
                                    pos = FORleft}
 )
@@ -1072,7 +1072,7 @@ rest671)) => let val  result = MlyValue.vardec (fn _ => let val  (ID
  val  (exp as exp1) = exp1 ()
  in (
 A.VarDec {name = (Symbol.symbol ID), 
-                                   escape = (ref true),
+                                   escape = (ref false),
                                    typ = NONE, init = exp, pos = VARleft}
 )
 end)
@@ -1086,7 +1086,7 @@ result = MlyValue.vardec (fn _ => let val  ID1 = ID1 ()
  val  (exp as exp1) = exp1 ()
  in (
 A.VarDec {name = (Symbol.symbol ID1), 
-                                   escape = (ref true),
+                                   escape = (ref false),
                                    typ = (SOME ((Symbol.symbol ID2),ID2left)),
                                    init = exp, pos = VARleft}
 )
@@ -1148,7 +1148,7 @@ ID1left, _)) :: rest671)) => let val  result = MlyValue.fields (fn _
  val  ID2 = ID2 ()
  val  (fieldsplus as fieldsplus1) = fieldsplus1 ()
  in (
-{name = (Symbol.symbol ID1), escape = (ref true),
+{name = (Symbol.symbol ID1), escape = (ref false),
                           typ = (Symbol.symbol ID2), pos = ID1left} ::
                              fieldsplus
 )
@@ -1167,7 +1167,7 @@ result = MlyValue.fieldsplus (fn _ => let val  ID1 = ID1 ()
  val  ID2 = ID2 ()
  val  (fieldsplus as fieldsplus1) = fieldsplus1 ()
  in (
-{name = (Symbol.symbol ID1), escape = (ref true),
+{name = (Symbol.symbol ID1), escape = (ref false),
                           typ = (Symbol.symbol ID2), pos = ID1left} ::
                              fieldsplus
 )

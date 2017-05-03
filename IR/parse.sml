@@ -1,6 +1,13 @@
+(*
+These lines are just place holders for automated testing
+*)
+val dir_inname = "../../Parser/testcases/translation/"
+val dir_outname = "/home/vijay094/ws/Compilers/IR/testing/my_outputs/"
+
 signature PARSE =
 sig
   val parse: string -> string -> unit
+	val parseall: string -> unit
 end
 
 functor ParseFun(structure Symbol: SYMBOL) : PARSE=
@@ -60,7 +67,47 @@ struct
         then PrintTree.printprog outfile (Translate.getResults())
         else ();
 	TextIO.closeOut outfile
-      end handle LrParser.ParseError => raise ErrorMsg.Error
+      end handle LrParser.ParseError =>
+              (TextIO.output(TextIO.stdErr,
+                             "Parser cannot repair the program sufficiently \ 
+                                \to parse it\n");
+               ())
+
+  exception FileError																						
+  fun parseall filename =
+    let val infile = TextIO.openIn filename
+
+        fun process_file(infile) =
+          let val current_file = TextIO.inputLine(infile)
+              val current_filename = 
+                     case current_file of
+                           NONE => (print ("error reading" ^ filename); 
+                                    raise FileError) |
+                           SOME str1 => str1;
+              val current_size = String.size(current_filename);
+              val current_size = current_size - 1;
+              val current_filename = String.substring(current_filename,0,current_size);
+              val full_inname = dir_inname ^ current_filename
+              val full_outname = dir_outname ^ current_filename
+              val full_outname = full_outname ^ ".out";
+              val temp = (print ("Parsing... " ^ current_filename ^ ".....\n" );
+                          parse full_inname full_outname)
+          in
+            if(TextIO.endOfStream(infile))
+              then
+                ()
+              else
+                process_file(infile)
+                handle _ => ()
+          end
+    in
+      if(TextIO.endOfStream(infile))
+        then
+          (print (filename ^ "is empty"))
+        else
+          process_file(infile)
+    end
+
 
 end
 
