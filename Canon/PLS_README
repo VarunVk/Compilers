@@ -1,0 +1,4 @@
+All necessary cosmetic changes are done.
+Just copy the latest version of translate.sml, And at the end of the file,
+call Canon.Canonize with statements which are produced from Translate.
+

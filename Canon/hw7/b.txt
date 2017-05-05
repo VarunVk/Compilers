@@ -1,0 +1,47 @@
+The fragments generated from the program: 
+
+LABEL L23
+EXP(
+ ESEQ(
+  EXP(
+   TEMP t145),
+  ESEQ(
+   MOVE(
+    ESEQ(
+     MOVE(
+      TEMP t157,
+      BINOP(PLUS,
+       TEMP t145,
+       BINOP(MUL,
+        CONST 3,
+        CONST 4))),
+     MEM(
+      TEMP t157)),
+    CONST 5),
+   ESEQ(
+    MOVE(
+     ESEQ(
+      MOVE(
+       TEMP t175,
+       BINOP(PLUS,
+        TEMP t145,
+        BINOP(MUL,
+         ESEQ(
+          MOVE(
+           TEMP t174,
+           BINOP(PLUS,
+            TEMP t147,
+            BINOP(MUL,
+             CONST 3,
+             CONST 4))),
+          MEM(
+           TEMP t174)),
+         CONST 4))),
+      MEM(
+       TEMP t175)),
+     CONST 7),
+    CONST 0))))
+
+LABEL L0
+ "
+
