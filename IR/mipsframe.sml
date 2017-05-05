@@ -84,7 +84,6 @@ struct
          }
       end
 
-    fun name ({label,...}:frame) = label
 
     fun formals ({formals=fmls,...}:frame) = fmls
 
@@ -105,4 +104,34 @@ struct
              Tree.SEQ(Tree.MOVE(RetVal,exp),Tree.LABEL(lab))
 
     fun procEpilogue ({epilogue=lab,...}:frame) = lab
+
+    fun static_link ({numformals=nf,...}:frame) =
+            Tree.CONST (~(WS * (nf - 1)))
+
+        fun mapvar _ (InReg t) = (print "Reg Chaining";Tree.TEMP t)
+          | mapvar frames (InFrame k) =
+              let fun chainback nil e = (print "NIL Chaining";Tree.MEM(Tree.BINOP(Tree.PLUS,
+                                                           (Tree.CONST k),e)))
+                    | chainback (frame::frames) e =
+                        (print "Fn Chaining ";(chainback frames
+                                   (Tree.MEM(Tree.BINOP(Tree.PLUS,
+                                                        static_link frame,
+                                                        e)
+                                            ))))
+              in (chainback frames (Tree.TEMP FPreg))
+              end
+
+        fun mapslink frames =
+              let fun chainback nil e = (print "Fn Nil Chaining ";e)
+                    | chainback (frame::frames) e =
+                         (print "Fn Chaining ";chainback frames (Tree.MEM(Tree.BINOP(Tree.PLUS,
+                                                               static_link frame,
+                                                               e
+                                                              )
+                                                   )
+                                          ))
+              in (chainback frames (Tree.TEMP FPreg))
+              end
+
+
 end

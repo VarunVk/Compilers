@@ -11,7 +11,8 @@ sig
     (* word size; may be needed in estimating space requests for arrays
        and records in translation
      *)
-    val FP: temp
+    val FPreg: temp
+    val RVreg: temp
     val WS: int
 
     (* the stuff about frames from the homework 5 *)
@@ -51,4 +52,7 @@ sig
     val StringFragStr: frag -> string
     val ProcFragLab: frag -> string
     val ProcFragBody: frag -> stm
+
+    val mapvar : frame list -> access -> exp
+    val mapslink : frame list-> exp
 end

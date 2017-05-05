@@ -23,8 +23,6 @@ struct
    val outermost = Bottom
    val fragList = ref [] : F.frag list ref
 
-   (*fun initfrags () = !fragList*)
-
    fun newLevel {parent: level, name: label, formals: bool list} =
        (Other ((F.newFrame {name=name, formals=(true :: formals)}),
                parent, ref()))
@@ -35,6 +33,7 @@ struct
 
    fun formals (level as (Other (frame,_,_))) =
        (map (fn x => (level,x)) (tl (F.formals frame)))
+
 
    fun allocLocal (level as (Other (frame,_,_))) esc =
        (level,(F.allocLocal frame esc))
@@ -48,14 +47,16 @@ struct
    *)
 
    val NilLab = T.newlabel()
+   val UnitLab = T.newlabel()
 
    fun initfrags () =
-      fragments := [F.stringfrag NilLab " "]
+      fragments := [F.stringfrag UnitLab " "]@[F.stringfrag NilLab " "]
 
    (* a useful function for creating a sequence out of two statement forms *)
-   fun seq [s1,s2] = (IR.SEQ (s1,s2))
+   fun seq [s1] =  s1
+     | seq [s1,s2] = (IR.SEQ (s1,s2))
      | seq (s1 :: rs) = (IR.SEQ (s1,(seq rs)))
-     | seq [] = IR.EXP (IR.CONST 0)
+     | seq [] = (IR.EXP(IR.CONST 0))
 
    (* the translation form for expressions that was discussed in class *)
    datatype exp = Ex of IR.exp
@@ -94,37 +95,47 @@ struct
    *)
 
   type frag = F.frag
-  fun getResults () = (!fragments)
+  fun getResults () = rev (!fragments)
 
   (* some sample functions that might be written for translation *)
   val error = ErrorMsg.error
 
-  fun traceSL Bottom Bottom bestguess = (error 0 "Following static links failed"; bestguess)
-    | traceSL Bottom _ bestguess = (error 0 "Following static links failed"; bestguess)
-    | traceSL _ Bottom bestguess = (error 0 "Following static links failed"; bestguess)
-    | traceSL (declevel as Other(_, _,uniqdec)) (uselevel as Other(_, useparent,uniquse)) bestguess =
+  fun traceSL Bottom Bottom  = (error 0 "Both at Bottom level";[] )
+  | traceSL Bottom _  = (error 0 "Declared level reached Bottom";[])
+    | traceSL _ Bottom  = (error 0 "Uselevel reached Bottom.";[])
+    | traceSL (declevel as Other(decframe, _,uniqdec)) (uselevel as Other(frame, useparent,uniquse))  =
       if uniqdec = uniquse
-      then bestguess
-      else traceSL declevel useparent (IR.MEM bestguess)
+      then []
+      else [frame]@(traceSL declevel useparent)
 
   fun simpleVarIR ((declevel, fraccess), uselevel) =
     let
-	val a= (IR.TEMP (T.newtemp()))
-	val b =traceSL declevel uselevel a
+	val frames =traceSL declevel uselevel
+  val a= F.mapvar frames fraccess
     in
-	Ex(F.exp (fraccess, b))
+	Ex(F.exp (fraccess, a))
     end
+
+      fun callexpIR (Bottom, calllevel, label, args) = Ex (IR.CALL (IR.NAME label, map mkEx args))
+        | callexpIR (declevel as Other(frame, parent, uniq), calllevel, label, args) =
+          let
+              val frames = traceSL parent calllevel
+              val sl = F.mapslink frames
+              val mkExArgs = map mkEx args
+          in
+              Ex (IR.CALL (IR.NAME label, sl :: mkExArgs))
+          end
 
   fun binopIR (binop, left, right) = Ex(IR.BINOP(binop, mkEx(left), mkEx(right)))
 
   fun relopIR (relop, left, right) =
-    case relop of
+  (*  case relop of
 	IR.EQ => Ex(F.externalCall "stringEqual" [mkEx left, mkEx right])
       | IR.LE => Ex(F.externalCall "stringLE" [mkEx left, mkEx right])
       | IR.LT => Ex(F.externalCall "stringLT" [mkEx left, mkEx right])
       | IR.GE => Ex(F.externalCall "stringGE" [mkEx left, mkEx right])
       | IR.GT => Ex(F.externalCall "stringGT" [mkEx left, mkEx right])
-      | _ => Cx(fn (t, f) => IR.CJUMP(relop, mkEx(left), mkEx(right), t, f))
+      | _ => *)Cx(fn (t, f) => IR.CJUMP(relop, mkEx(left), mkEx(right), t, f))
 
 
   fun PlusIR (exp1, exp2) = binopIR(IR.PLUS, exp1, exp2)
@@ -146,35 +157,34 @@ struct
                 Bottom => (error 0 "Fundec should not happen in outermost";
                            F.newFrame {name=T.newlabel(), formals=[]})
 	      | Other((frame', _, _)) => frame'
-        val treeBody = mkNx body'
-	val y = F.procfrag levelFrame treeBody
+        val treeBody = mkEx body'
+        val procedureBody = F.procBody levelFrame (mkEx body')
+	      val y = F.procfrag levelFrame procedureBody
     in
         fragments := y::(!fragments)
     end
 
   fun forIR (varEx, escape, loEx, hiEx, bodyNx, breaklabel) =
     let
-    val tLo= T.newtemp()
     val tHi= T.newtemp()
     val tVar= T.newtemp()
 	val body = mkNx(bodyNx)
 	val updatelabel = T.newlabel()
+	val endlabel = T.newlabel()
 	val bodylabel = T.newlabel()
     in
 	Nx(seq[
-        IR.MOVE (IR.TEMP(tLo), mkEx loEx),
+        IR.MOVE (IR.TEMP(tVar), mkEx loEx),
         IR.MOVE (IR.TEMP(tHi), mkEx hiEx),
-        IR.CJUMP(IR.LE, IR.TEMP(tLo), IR.TEMP(tHi), bodylabel, breaklabel),
-        (*IR.MOVE (IR.TEMP(tVar), mkEx varEx),*)
-
+        IR.CJUMP(IR.LE, IR.TEMP(tVar), IR.TEMP(tHi), bodylabel, endlabel),
 
 	       IR.LABEL(bodylabel),
          body,
-         IR.CJUMP(IR.LT, IR.TEMP(tLo), IR.TEMP(tHi), updatelabel, breaklabel),
+         IR.CJUMP(IR.LT, IR.TEMP(tVar), IR.TEMP(tHi), updatelabel, endlabel),
          IR.LABEL(updatelabel),
-         IR.MOVE(IR.TEMP(tLo), IR.BINOP(IR.PLUS, IR.TEMP(tLo), IR.CONST 1)),
-
-         IR.JUMP(IR.NAME (bodylabel), [bodylabel])
+         IR.MOVE(IR.TEMP(tVar), IR.BINOP(IR.PLUS, IR.TEMP(tVar), IR.CONST 1)),
+         IR.JUMP(IR.NAME (bodylabel), [bodylabel]),
+         IR.LABEL(endlabel)
          ]
          )
     end
@@ -186,8 +196,8 @@ struct
     | exp2loc _ = (error 0 "Can't convert exp to loc"; IR.TEMPLOC(T.newtemp()))
 
 
-  fun sequencingIR [] = Ex (IR.CONST 0)
-    | sequencingIR [exp] = exp
+  fun sequencingIR [] = Ex (IR.NAME NilLab)
+    | sequencingIR [exp] =Ex (IR.ESEQ (mkNx exp, IR.CONST 0))
     | sequencingIR (head :: l) = Ex (IR.ESEQ (mkNx head, mkEx (sequencingIR l)))
 
   fun assignIR (left, right) = Nx (IR.MOVE (mkEx left, mkEx right))
@@ -203,11 +213,11 @@ struct
           else false
         fun genFragLabel() =
         let
-          val x=valOf (List.find checkFragLit (!fragList))
+          val x=(List.find checkFragLit (!fragList))
         in
-          if F.StringFrag (x)
+          if isSome(x) andalso F.StringFrag (valOf x)
           then
-            F.StringFragLabel (x)
+            F.StringFragLabel (valOf x)
           else
               let
                   val lab' = T.newlabel()
@@ -218,6 +228,7 @@ struct
               end
         end
         val lab = genFragLabel()
+
     in
         Ex(IR.NAME(lab))
     end
@@ -302,32 +313,23 @@ struct
                                            mkEx exp)
         fun instantiateFields ([]) = [recordInit]
           | instantiateFields (head :: l) = (setField(head, length l)) :: (instantiateFields (l))
+          val _ = print "RecordIR()"
     in
         Ex(IR.ESEQ(
                 seq(rev(instantiateFields(exps))),
                 IR.TEMP(r)))
     end
 
-  fun fieldIR (nameEx, elem) =
+  fun fieldIR (nameEx, elem) = (print "FieldIR()";
     Ex(IR.MEM(IR.BINOP(
                    IR.PLUS, mkEx nameEx,
-                   IR.BINOP(IR.MUL, IR.CONST(elem), IR.CONST (F.WS)))))
+                   IR.BINOP(IR.MUL, IR.CONST(elem), IR.CONST (F.WS))))))
 
 
-  fun nilIR () = Ex (IR.CONST 0)
+  fun nilIR () = Ex (IR.NAME NilLab)
 
   fun intIR (n) = Ex (IR.CONST n)
 
-  fun callexpIR (Bottom, calllevel, label, args) = Ex (IR.TEMP (T.newtemp()))(*Ex (IR.TEMP(F.FP))*)
-    | callexpIR (declevel as Other(frame, parent, uniq), calllevel, label, args) =
-      let
-          (*val fp1 = IR.TEMP (F.FP)*)
-          val fp1=(IR.TEMP (T.newtemp()))
-          val sl = traceSL parent calllevel fp1
-          val mkExArgs = map mkEx args
-      in
-          Ex (IR.CALL (IR.NAME label, sl :: mkExArgs))
-      end
 
   fun arrayIR (sizeEx, initEx, break) =
     let
@@ -364,9 +366,8 @@ struct
 
   fun LetBodyJoin (tyExp, exp) =
   let
-    fun loopStms(a::rest) = mkNx(a)::loopStms(rest)
-      | loopStms([])      =[]
-  in
-    Ex(IR.ESEQ(seq(rev (loopStms tyExp)), mkEx exp ))
+    val _ = 5
+    in
+    Ex(IR.ESEQ(seq(rev (map mkNx tyExp)), mkEx exp))
   end
 end

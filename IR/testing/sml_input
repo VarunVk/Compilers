@@ -1,0 +1,2 @@
+CM.make "../../IR/sources.cm";
+Parse.parseall "files.list";

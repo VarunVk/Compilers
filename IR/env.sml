@@ -5,12 +5,12 @@ sig
 
   eqtype symbol
 
-  type access  
+  type access
   type level
   type label
   type 'a table
 
-  datatype ty = 
+  datatype ty =
             RECORD of (symbol * ty) list * unique
           | NIL
           | INT
@@ -55,7 +55,7 @@ struct
   type label = T.label
   type level = Tr.level
 
-  datatype ty = 
+  datatype ty =
             RECORD of (symbol * ty) list * unique
           | NIL
           | INT
@@ -85,7 +85,7 @@ struct
       | leq(NAME(sym1, _), NAME(sym2, _)) = String.compare(Symbol.name sym1, Symbol.name sym2) = EQUAL (* TODO is this correct? *)
       | leq(_, _) = false
 
-    fun comp(t1, t2) = 
+    fun comp(t1, t2) =
     	if leq(t1, t2) andalso leq(t2, t1)
     		then EQ
     	else if leq(t1, t2)
@@ -107,10 +107,10 @@ struct
          | NAME(sym, _) => print ("name type is " ^ Symbol.name sym ^ "\n")
          | UNIT => print "type is unit\n"
          | ERROR => print "type is Error\n"
-  
+
   (* predefined types *)
-  val base_tenv : ty table = 
-    (Symbol.enter 
+  val base_tenv : ty table =
+    (Symbol.enter
            ((Symbol.enter (Symbol.empty,
                            (Symbol.symbol "string"),
                            STRING)),
@@ -119,16 +119,16 @@ struct
 
   (* predefined functions; incomplete and should be completed using the
      list on page 519 *)
-  val base_venv : fnvar table = 
+  val base_venv : fnvar table =
     (Symbol.enter
-       ((Symbol.enter 
-          ((Symbol.enter 
+       ((Symbol.enter
+          ((Symbol.enter
              ((Symbol.enter
-                ((Symbol.enter 
-                   ((Symbol.enter 
-                      ((Symbol.enter 
-                         ((Symbol.enter 
-                            ((Symbol.enter 
+                ((Symbol.enter
+                   ((Symbol.enter
+                      ((Symbol.enter
+                         ((Symbol.enter
+                            ((Symbol.enter
                                ((Symbol.enter
                                   (Symbol.empty,
                                    (Symbol.symbol "print"),

@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+
+while (<>)
+{
+	# Remap all labels.
+  while (/t([0-9]+)/)
+  {
+    $temp_map{$1} = $temp_counter++ unless (exists $temp_map{$1});
+    $reg = $temp_map{$1};
+    s/$1/r$reg/g;
+  }
+
+  # Remap all temporaries.
+  while (/(L[0-9]+)/)
+  {
+    $label_map{$1} = $label_counter++ unless (exists $label_map{$1});
+    $label = $label_map{$1};
+    s/$1/N$label/g;
+  }
+
+  print;
+}

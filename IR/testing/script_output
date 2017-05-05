@@ -1,0 +1,103 @@
+Standard ML of New Jersey v110.78 [built: Mon Jan 23 18:02:06 2017]
+- [autoloading]
+[library $smlnj/cm/cm.cm is stable]
+[library $smlnj/internal/cm-sig-lib.cm is stable]
+[library $/pgraph.cm is stable]
+[library $smlnj/internal/srcpath-lib.cm is stable]
+[library $SMLNJ-BASIS/basis.cm is stable]
+[autoloading done]
+[scanning ../../IR/sources.cm]
+[attempting to load plugin $/lex-ext.cm]
+[library $/lex-ext.cm is stable]
+[library $smlnj/cm/tools.cm is stable]
+[library $smlnj/internal/cm-lib.cm is stable]
+[plugin $/lex-ext.cm loaded successfully]
+[attempting to load plugin $/mllex-tool.cm]
+[library $/mllex-tool.cm is stable]
+[plugin $/mllex-tool.cm loaded successfully]
+[parsing ../../IR/(sources.cm):tiger.lex.sml]
+[attempting to load plugin $/grm-ext.cm]
+[library $/grm-ext.cm is stable]
+[plugin $/grm-ext.cm loaded successfully]
+[attempting to load plugin $/mlyacc-tool.cm]
+[library $/mlyacc-tool.cm is stable]
+[plugin $/mlyacc-tool.cm loaded successfully]
+[parsing ../../IR/(sources.cm):tiger.grm.sig]
+[parsing ../../IR/(sources.cm):tiger.grm.sml]
+[parsing ../../IR/(sources.cm):translate.sml]
+[parsing ../../IR/(sources.cm):parse.sml]
+../../IR/parse.sml:4.1-4.55 Warning: definition not tracked by CM
+../../IR/parse.sml:5.1-5.71 Warning: definition not tracked by CM
+[library $/ml-yacc-lib.cm is stable]
+[library $SMLNJ-LIB/Util/smlnj-lib.cm is stable]
+[library $SMLNJ-ML-YACC-LIB/ml-yacc-lib.cm is stable]
+[loading ../../IR/(sources.cm):table.sig]
+[loading ../../IR/(sources.cm):table.sml]
+[loading ../../IR/(sources.cm):symbol.sml]
+[loading ../../IR/(sources.cm):temp.sig]
+[loading ../../IR/(sources.cm):temp.sml]
+[loading ../../IR/(sources.cm):translate.sig]
+[loading ../../IR/(sources.cm):env.sml]
+[compiling ../../IR/(sources.cm):tiger.grm.sig]
+[code: 64, env: 981 bytes]
+[loading ../../IR/(sources.cm):errormsg.sml]
+[loading ../../IR/(sources.cm):absyn.sml]
+[loading ../../IR/(sources.cm):prabsyn.sml]
+[loading ../../IR/(sources.cm):prtype.sml]
+[compiling ../../IR/(sources.cm):tiger.grm.sml]
+[code: 63898, data: 4754, env: 4541 bytes]
+[compiling ../../IR/(sources.cm):tiger.lex.sml]
+../../IR/tiger.lex.sml:149.18-153.41 Warning: match nonexhaustive
+          (_,0) => ...
+          (hd :: tl,n) => ...
+  
+[code: 143157, data: 1153, env: 3322 bytes]
+[loading ../../IR/(sources.cm):escape.sml]
+[loading ../../IR/(sources.cm):tree.sml]
+[loading ../../IR/(sources.cm):mipsregs.sig]
+[loading ../../IR/(sources.cm):mipsregs.sml]
+[loading ../../IR/(sources.cm):frame.sig]
+[loading ../../IR/(sources.cm):mipsframe.sml]
+[compiling ../../IR/(sources.cm):translate.sml]
+../../IR/translate.sml:81.7-84.26 Warning: match nonexhaustive
+          Ex (CONST 0) => ...
+          Ex (CONST 1) => ...
+          Ex e => ...
+          Cx stm => ...
+  
+../../IR/translate.sml:38.8-39.40 Warning: match nonexhaustive
+          (level as Other (frame,_,_),esc) => ...
+  
+../../IR/translate.sml:34.8-35.56 Warning: match nonexhaustive
+          level as Other (frame,_,_) => ...
+  
+../../IR/translate.sml:32.8-32.44 Warning: match nonexhaustive
+          Other (_,parent,_) => ...
+  
+../../IR/translate.sml:30.8-30.49 Warning: match nonexhaustive
+          Other (frame,_,_) => ...
+  
+[code: 31993, data: 541, env: 2326 bytes]
+[loading ../../IR/(sources.cm):semant.sml]
+[loading ../../IR/(sources.cm):printtree.sml]
+[compiling ../../IR/(sources.cm):parse.sml]
+[code: 16670, data: 342, env: 25508 bytes]
+[New bindings added.]
+val it = true : bool
+Parsing... for.tig.....
+Reg ChainingSimple variable declaration: a
+Done processing Let decs.
+Found a simple Vazr
+aReg ChainingFound a simple Vazr
+aReg ChainingFound a simple Vazr
+aReg ChainingFound a simple Vazr
+aReg ChainingFound a simple Vazr
+aReg ChainingFound a simple Vazr
+aReg ChainingFound a simple Vazr
+aReg ChainingFound a simple Vazr
+aReg ChainingFound a simple Vazr
+aReg ChainingFound a simple Vazr
+aReg ChainingFound a simple Vazr
+aReg ChainingFound a simple Vazr
+aReg ChainingNIL Chainingval it = () : unit
+- 

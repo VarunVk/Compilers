@@ -1,0 +1,74 @@
+These directions for semi-automated testing are similar to those for 
+homeworks 3 and 4. The main difference now is that you will be
+comparing the results of translation rather than abstract syntax or
+error messages or types. It is a lot harder to line the results of
+translation up. One of the problems is that names for temporaries and
+labels are automatically generated. To try and get around this, I am
+providing you a simple perl script that "normalizes" these
+names. This renaming may not work perfectly and there will still be
+differences in translation that will cause more "diffs" to be
+noted. Still, the testing regime should be helpful in isolating
+problems quickly, I hope. If you come up with ways to improve this,
+such as by writing a better normalization script, do let me know:
+perhaps we can distribute your ideas and testing code to the rest of
+the class and your code could also be used in future offerings of
+this course. 
+
+Here are the specific instructions for using the automated testing
+framework: 
+
+1. Edit the first two lines of the runsml file to indicate whether
+or not you have a working lexer and parser.
+
+2. Edit the third line of the runsml file to indicate whether you are
+wanting to test using the translation tests or the
+syntax-and-sem-analysis tests; setting TRANSLATE to true means you
+want to use the former.
+
+3. Edit the next three lines to indicate the the correct directories
+for the source code, the *root* for the test cases and the current
+directory. Typically, you will want to leave the last as is. As
+before, remember that you should not use ~ in paths. You can use ..,
+though.   
+
+4. Make sure you do not have a file named parse.sml.bak in the code 
+directory that you want to preserve; if you do, move it somewhere else
+(or change the lines in runsml that make use of this name to save a
+copy of the original parse.sml file).
+
+5. Run ./runsml. This will run the driver for all files in the chosen
+testcases directory, normalize the results, compare them to mine and
+show you where these differ. 
+
+6. If you want to specialize your testing to categories of Tiger
+programs---for example, the different collections suggested for
+graded testing in the homework writeup---then you should comment
+out the line in runsml which creates a listing of the files in
+the testing directory in the file "files.list" and create your
+own "files.list" containing the names of the testcases you need.
+For reference, it is line 19 in the runsml file that needs to be
+commented out.
+
+7. If you find it difficult to understand the output of the diff tool
+on the terminal, you could instead use visual diff tools, such as
+'meld'.  Linux machines in the CSE domain have this tool. You can
+integrate this into the runsml script by replacing the line
+
+  diff $CORRECT_OUTPUTS_DIR/$line.normalized $CURR_DIR/$OUTPUTS_DIR/$line.normalized
+
+with:
+
+  meld $CORRECT_OUTPUTS_DIR/$line.normalized $CURR_DIR/$OUTPUTS_DIR/$line.normalized
+
+which will start the GUI interface of meld for comparing the files. If you 
+are connecting to these machine remotely using ssh, you will have to use 
+the -X flag as shown:
+
+	ssh -X name@machine.cs.umn.edu
+
+Note: I would not recommend using meld to start things off: if there
+are lots of identical files, you will have to work through many annoying
+screens if your test with the full collection of files. Instead, it may be
+a better idea to use diff to find out what to look at more closely and
+then create a narrowed down collection of test cases to look at more
+closely in files.list.

@@ -62,7 +62,7 @@ fun compParam ({exp=_, ty=E.INT},
     if ref1 = ref2 then () else error pos "Error: right argument must be of array type identical to left"
     | compParam ({exp=_, ty=E.ERROR},
   	       {exp=_, ty=E.NIL}, pos) =
-      error pos "Error : **********************"
+      error pos "Error : ERROR <> NIL"
     | compParam ({exp=_, ty=_},
 	       {exp=_, ty=_}, pos) =
     error pos "Error : Comparison Err. Non matching int, string, record, or array types"
@@ -98,8 +98,8 @@ fun transExp (venv, tenv, exp, level: Tr.level, break) =
   let fun
       trexp (A.VarExp(var)) = trvar var
       | trexp (A.IntExp(intvalue)) = {exp= Tr.intIR(intvalue), ty=E.INT}
-      | trexp (A.StringExp(stringvalue, pos)) = {exp=(Tr.stringIR(stringvalue)), ty=E.STRING}
-      | trexp (A.NilExp) = {exp=(Tr.nilIR()), ty=E.NIL}
+      | trexp (A.StringExp(stringvalue, pos)) = (print ("Its a string "^stringvalue^"\n" ); {exp=(Tr.stringIR(stringvalue)), ty=E.STRING})
+      | trexp (A.NilExp) = {exp= (Tr.nilIR()), ty=E.NIL}
       | trexp (A.CallExp({func, args, pos})) =
 	let
 	    (* recursively loop on all parameters to check if they are of the same type and number*)
@@ -186,18 +186,18 @@ fun transExp (venv, tenv, exp, level: Tr.level, break) =
              (case x of
                   E.RECORD(f, _) =>
                   let
-                      val recFormal : (S.symbol * E.ty) list = f
+		      val recFormal : (S.symbol * E.ty) list = f
                       fun getFieldType (name: string, []) = E.ERROR
                         | getFieldType (name: string, (sym, exp, pos)::l) = (
                            if String.compare (name, S.name sym) = EQUAL
-                           then (#ty (trexp exp))
+                           then (print ("Found "^ (S.name sym)^"\n");(#ty (trexp exp)))
                            else getFieldType(name, l))
                       fun checkFormal (sym, ty) = (getFieldType(S.name sym, fields);())
                       (*if not (E.leq(getFieldType(S.name sym, fields), ty))
                         then error pos ("actual type doesn't match formal type: " ^ S.name sym)
                         else ()*)
                       fun iterator((fieldname, typeid), ()) =
-                        (checkFormal (fieldname, x); ())
+                        (print (S.name fieldname^": checking for this field.\n"); checkFormal (fieldname, x);print "Done.\n"; ())
 
                         (*case S.look(tenv, typeid) typeid of
                             SOME x => (checkFormal (fieldname, x); ())
@@ -207,6 +207,7 @@ fun transExp (venv, tenv, exp, level: Tr.level, break) =
                       then (error pos ("record list is wrong length: " ^ S.name typ);
 			    {exp=(Tr.nilIR()), ty=x})
                       else (foldr iterator () recFormal;
+			    print "Record Exp\n";
 			    {exp=(Tr.recordIR(map #exp (map trexp (map #2 fields)))), ty=x})
                   end
                 | _ => (error pos ("error : expected record type, not: " ^ S.name typ); {exp=(Tr.nilIR()), ty=E.NIL})
@@ -337,9 +338,10 @@ fun transExp (venv, tenv, exp, level: Tr.level, break) =
 	    val curDepth = !depth
 	    val _ =  depth := 0
 	    val {venv=venv', tenv=tenv', expList=decExp} = transDec(venv, tenv, decs, level, break)
+	    val _ = print "Done processing Let decs.\n"
 	    val _ =  depth := curDepth
-      val {exp= bodyExp, ty=bodyty } = transExp(venv', tenv', body, level, break)
-      val finalExp = Tr.LetBodyJoin (decExp, bodyExp)
+	    val {exp= bodyExp, ty=bodyty } = transExp(venv', tenv', body, level, break)
+	    val finalExp = Tr.LetBodyJoin (decExp, bodyExp)
 	in
 	     {exp= finalExp, ty=bodyty}
 	end
@@ -384,7 +386,7 @@ fun transExp (venv, tenv, exp, level: Tr.level, break) =
 	end
       and trvar (A.SimpleVar(id, pos)) =
 	  (case S.look(venv, id) of
-	       SOME(Env.VarEntry({access, ty, read_only=_})) => {exp=Tr.simpleVarIR(access, level), ty=ty}
+	       SOME(Env.VarEntry({access, ty, read_only=_})) => (print ("Found a simple Vazr\n"^S.name id);{exp=Tr.simpleVarIR(access, level), ty=ty})
 	    (*|  SOME(Env.FunEntry({level, label, formals, result})) => {exp=(), ty=result} *)
 	    |  NONE => (error pos ("error: undeclared variable " ^ S.name id); {exp=(Tr.nilIR()), ty=E.ERROR})
 	  )
@@ -394,9 +396,13 @@ fun transExp (venv, tenv, exp, level: Tr.level, break) =
 	       let
 		   val fields = recGen
 		   fun getFieldType ((fSymbol, fTy)::l, id, pos) =
-		     if String.compare(S.name fSymbol, S.name id) = EQUAL
-		     then fTy
-		     else getFieldType(l, id, pos)
+		     if
+			 String.compare(S.name fSymbol, S.name id) = EQUAL
+		     then
+			 (print ("###:Found the fieldtype  : "^S.name id);fTy)
+		     else
+			 (print ("###"^S.name fSymbol ^ "!= "^S.name id);getFieldType(l, id, pos))
+
 		     | getFieldType ([], id, pos) =
 		       (error pos ("Error: no record field with name " ^ S.name id);
 			E.ERROR)
@@ -407,7 +413,11 @@ fun transExp (venv, tenv, exp, level: Tr.level, break) =
 				   getIndex(map #1 fields, id, 0)),
 		    ty=getFieldType(recGen, id, pos)}
 	       end
-	     | {exp=_, ty=_} => (error pos ("Error: non-record type used in record selection");
+	     | {exp=_, ty=E.ERROR} => (error pos ("### Error: non-record type used in record selection but its an INT");
+				 {exp=(Tr.nilIR()), ty=E.ERROR})
+	     | {exp=_, ty=E.ARRAY(_,_)} => (error pos ("### Error: non-record type used in record selection but its an Array");
+				 {exp=(Tr.nilIR()), ty=E.ERROR})
+	     | {exp=_, ty=_} => (error pos ("### Error: non-record type used in record selection");
 				 {exp=(Tr.nilIR()), ty=E.ERROR})
 	  )
 	| trvar (A.SubscriptVar(v, subExp, pos)) =
@@ -442,10 +452,11 @@ and transDec(venv, tenv, decs, level, break) =
 		case ty of
 		    E.NAME(name, tyRef) => actualTy(getType(S.look(tenv, name)))
 		 |  someTy => someTy
-	      val access' = Tr.allocLocal level (!escape)
+	      val access' = Tr.allocLocal level  (!escape)
 	      fun createAssignExp() =
 		let
 		    val left = Tr.simpleVarIR(access', level)
+		    val _ = print ("Simple variable declaration: " ^ (S.name name)^"\n")
 		    val right = #exp (transExp(venv, tenv, init, level, break))
 		in
 		    Tr.assignIR(left, right)
@@ -513,57 +524,70 @@ and transDec(venv, tenv, decs, level, break) =
 	  end
 	| trdec(venv, tenv, A.FunctionDec(fundeclist), expList) =
 	  let
-	      fun transrt rt =
+	      fun retTylookup rt =
 		(case S.look(tenv, rt) of
-		     SOME(rt') => rt'
-		  |  NONE => (error 0 ("Return type unrecognized: " ^ S.name rt); E.ERROR)
+		     SOME(typ) => typ
+		   | NONE => (error 0 ("Return type unrecognized: " ^ S.name rt); E.ERROR)
 		)
 	      fun transparam {name, escape, typ, pos} =
 		(case S.look(tenv, typ) of
 		     SOME t => {name=name, escape=escape, ty=t, pos=pos}
-		  |  NONE => (error 0 ("Parameter type unrecognized: " ^ S.name typ); {name=name, escape=escape, ty=E.ERROR, pos=pos})
+		   | NONE => (error 0 ("Parameter type unrecognized: " ^ S.name typ); {name=name, escape=escape, ty=E.ERROR, pos=pos})
 		)
-              fun enterFuncs (func, venv) =
+	      (* Add to funcdec to venv *)
+	      fun enterFuncs (func, venv) =
 		let
 		    val newlabel = T.newlabel()
 		    fun getEscape {name=name', escape=escape', typ=typ', pos=pos'} = !escape'
 		    fun genEscapeList params' = map getEscape params'
 		in
+		    (* For each function create a new level*)
 		    case func of
 			{name, params, body, pos, result=SOME(rt, pos')} =>
 			S.enter(venv, name, Env.FunEntry{level=Tr.newLevel {parent=level, name=newlabel, formals=genEscapeList params},
-							 label=newlabel, formals= map #ty (map transparam params), result=transrt rt})
+							 label=newlabel, formals= map #ty (map transparam params), result=retTylookup rt})
 		     |  {name, params, body, pos, result=NONE} =>
 			S.enter(venv, name, Env.FunEntry{level=Tr.newLevel {parent=level, name=newlabel, formals=genEscapeList params},
 							 label=newlabel, formals= map #ty (map transparam params), result=E.UNIT})
 		end
 	      val venv' = foldr enterFuncs venv fundeclist
+
 	      fun checkfundec({name, params, body, pos, result}) =
 		let
-		    val newLevel =
+		    val Level =
 			(case S.look(venv', name) of
 			     SOME(Env.FunEntry({level=level', label=_, formals=_, result=_})) => level'
 			  |  _ => Tr.newLevel {parent=Tr.outermost, name=T.newlabel(), formals=[]}
 			)
+		    val _ = print "1"
 		    val result_ty =
 			(case result of
-			     SOME(rt, pos') => transrt rt
+			     SOME(rt, pos') => retTylookup rt
 			  |  NONE => E.UNIT
 			)
 		    val params' = map transparam params
-		    val allocatedFormals = Tr.formals newLevel
+		    val _ = print "2"
+		    val allocatedFormals = Tr.formals Level
+		    val _ = print "3"
+
 		    fun enterparam ({name, escape, ty, pos}, (venv, curIndex)) =
 		      (S.enter(venv, name, Env.VarEntry{access=List.nth(allocatedFormals, curIndex),
 							ty=ty, read_only=false}), curIndex + 1)
-		    val venv'' = #1 (foldl enterparam (venv', 1) params')
-		    val body' = transExp (venv'', tenv, body, newLevel, break)
+		    val _ = print "4"
+		    val venv'' = #1 (foldl enterparam (venv', 0) params')
+		    val _ = print "5"
+
+		    val body' = transExp (venv'', tenv, body, Level, break)
 		in
-		    Tr.procEntryExit {level=newLevel, body=(#exp body')};
+		    (* Add each function to the IR *)
+		    Tr.procEntryExit {level=Level, body=(#exp body')};
 		    if not (E.eq((#ty body'), result_ty))
 		    then error pos ("Error: function body not of unit type: " ^ S.name name)
 		    else ()
 		end
 	      fun foldfundec (fundec, ()) = checkfundec fundec
+
+	      (* Function to check for duplicate function declaration *)
 	      fun checkDuplicates({name, params, body, pos, result}, seenList) =
 		if List.exists (fn y => String.compare(S.name name, y) = EQUAL) seenList
 		then (error pos "error : two types of same name in mutually recursive fundec"; seenList)
@@ -606,12 +630,12 @@ and transTy(tenv, ty) =
     end
 
 
-fun transProg exp =
+  fun transProg exp =
   let
-      val mainlabel = T.namedlabel "$Main$$"
-      val exitlabel = T.newlabel()
-      val mainlevel = Tr.newLevel {parent=Tr.outermost, name=mainlabel, formals=[]}
-      val {exp=mainExp, ty=mainTy} = (transExp (Env.base_venv, Env.base_tenv, exp, mainlevel, exitlabel))
+    val mainlabel = T.namedlabel "$Main$$"
+    val exitlabel = T.newlabel()
+    val mainlevel = Tr.newLevel {parent=Tr.outermost, name=mainlabel, formals=[]}
+    val {exp=mainExp, ty=mainTy} = (transExp (Env.base_venv, Env.base_tenv, exp, mainlevel, exitlabel))
     in
       Tr.procEntryExit {level=mainlevel, body=mainExp}; ()
       (*Tr.getResults();*)

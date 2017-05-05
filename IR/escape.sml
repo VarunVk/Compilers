@@ -3,7 +3,7 @@ sig
     type exp
     val findescapes: exp -> unit
 end
-    
+
 functor FindEscapesFun(structure A: ABSYN
                        structure S: SYMBOL
                        sharing type A.symbol = S.symbol) :> FINDESCAPES
@@ -14,17 +14,17 @@ struct
 type exp = A.exp
 type depth = int
 type escEnv = (depth * bool ref) S.table
-				 
+
 (* write code here to fill in the escape slot for variables as discussed
    in class; specifically, you will be defining findescapes *)
 
-fun traverseExp(env:escEnv, d:depth, s:exp):unit = 
-    let 
+fun traverseExp(env:escEnv, d:depth, s:exp):unit =
+    let
         fun trexp(A.VarExp(var))=traverseVar(env, d, var)
 	  | trexp(A.NilExp)  = ()
- 	  | trexp(A.IntExp(_)) = () 			   
+ 	  | trexp(A.IntExp(_)) = ()
        	  | trexp(A.StringExp(_)) = ()
-	  | trexp (A.CallExp{func, args, pos}) =  app trexp args 
+	  | trexp (A.CallExp{func, args, pos}) =  app trexp args
 	  | trexp (A.OpExp{left, oper, right, pos}) = (trexp left; trexp right)
 	  | trexp (A.RecordExp {fields, typ, pos}) = ()
 	  | trexp (A.SeqExp expList) =
@@ -62,7 +62,7 @@ fun traverseExp(env:escEnv, d:depth, s:exp):unit =
 	    end
 	  | trexp (A.ArrayExp {typ,size,init, pos}) = (trexp size; trexp init)
     in
-	trexp s 
+	trexp s
     end
 and traverseVar(env:escEnv, d:depth, s:A.var):unit =
     let
@@ -111,6 +111,6 @@ and traverseDecs(env:escEnv, d:depth, s:A.dec list):escEnv =
     in
 	foldl foldDecs env s
     end
-		
+
 fun findescapes(prog:exp):unit = traverseExp(S.empty, 0 ,prog) 
 end

@@ -1,0 +1,65 @@
+NOLEX=true
+NOPARSER=true
+TRANSLATE=true
+CODE_DIR='../../IR'
+TESTCASE_DIR='../../Parser/testcases'
+CURR_DIR=`pwd`
+
+#Set the subdirectories as needed for testing
+TESTCASE_SUB_DIR='syntax-and-sem-analysis'
+BASELINE_OUTPUTS_DIR='baseline_outputs/syntax-and-sem-analysis'
+OUTPUTS_DIR='my_outputs'
+if [ $TRANSLATE = true ]; then
+TESTCASE_SUB_DIR='translation'
+BASELINE_OUTPUTS_DIR='baseline_outputs/translation'
+OUTPUTS_DIR='my_outputs'
+fi
+
+# Create a list of files to test
+#ls $TESTCASE_DIR/$TESTCASE_SUB_DIR > files.list
+
+# Clean up the code directory and install given lexer and parser if needed
+rm -f $CODE_DIR/tiger.lex.sml
+if [ $NOLEX = true ]; then
+   cp tiger.lex.sml $CODE_DIR/
+fi
+rm -f $CODE_DIR/tiger.grm.sml
+rm -f $CODE_DIR/tiger.grm.sig
+if [ $NOPARSER = true ]; then
+  cp tiger.grm.sig $CODE_DIR/
+  cp tiger.grm.sml $CODE_DIR/
+fi
+
+# Update the parse.sml file to have the right directory names
+sed -i "/val dir_inname/c val dir_inname = \"$TESTCASE_DIR/$TESTCASE_SUB_DIR/\"" parse.sml
+sed -i "/val dir_outname/c val dir_outname = \"$CURR_DIR/$OUTPUTS_DIR/\"" parse.sml
+
+# Update the sml_input file to reflect the correct directory for the sml source
+sed -i "/CM.make /c CM.make \"$CODE_DIR/sources.cm\";" sml_input
+
+# Save original parse.sml and copy the desired one for tests there
+mv $CODE_DIR/parse.sml $CODE_DIR/parse.sml.bak
+cp parse.sml $CODE_DIR/parse.sml
+
+# Clean up my outputs directory
+rm -rf $CURR_DIR/$OUTPUTS_DIR/*
+
+# Parse the files.
+echo "Parsing inputs..."
+sml < sml_input > script_output
+
+# Normalize temps and labels in all files
+echo "Normalizing output..."
+for line in `cat files.list`; do
+	./normalize $CURR_DIR/$OUTPUTS_DIR/$line.out > $CURR_DIR/$OUTPUTS_DIR/$line.normalized
+done
+
+# Delete intermediate outputs
+rm $CURR_DIR/$OUTPUTS_DIR/*.tig.out
+
+# Diff the directories:
+echo "Diffing the directories..."
+for line in `cat files.list`; do
+      meld $BASELINE_OUTPUTS_DIR/$line.normalized $CURR_DIR/$OUTPUTS_DIR/$line.normalized
+done
+echo "Done."
