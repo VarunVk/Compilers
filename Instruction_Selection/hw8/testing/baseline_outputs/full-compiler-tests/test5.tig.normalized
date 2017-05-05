@@ -1,0 +1,351 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL N2
+0"
+
+LABEL N3
+N4:
+bgtz r0,N5
+N6:
+li $v0,0
+j N7
+N5:
+lw r1,-4($fp)
+li r2,10
+div r3,r0,r2
+move $a0,r1
+move $a1,r3
+jal N3
+lw r4,-4($fp)
+lw r5,-4(r4)
+lw r6,0(r5)
+lw r7,-4($fp)
+lw r8,-4(r7)
+lw r9,0(r8)
+li r10,10
+div r11,r0,r10
+li r12,10
+mul r13,r11,r12
+sub r14,r0,r13
+move r15,r14
+lw r16,-4($fp)
+lw r17,-4(r16)
+lw r18,0(r17)
+la r19,N2
+move $a0,r18
+move $a1,r19
+jal $Ord$$
+move r20,$v0
+add r21,r15,r20
+move $a0,r9
+move $a1,r21
+jal $Chr$$
+move r22,$v0
+move $a0,r6
+move $a1,r22
+jal $Print$$
+j N6
+N7:
+
+LABEL N8
+-"
+
+LABEL N9
+0"
+
+LABEL N10
+N11:
+bltz r23,N12
+N13:
+bgtz r23,N14
+N15:
+lw r24,-4($fp)
+lw r25,0(r24)
+la r26,N9
+move $a0,r25
+move $a1,r26
+jal $Print$$
+move r27,$v0
+N16:
+move r28,r27
+N17:
+move $v0,r28
+j N18
+N12:
+lw r29,-4($fp)
+lw r30,0(r29)
+la r31,N8
+move $a0,r30
+move $a1,r31
+jal $Print$$
+li r32,0
+sub r33,r32,r23
+move $a0,$fp
+move $a1,r33
+jal N3
+move r28,$v0
+j N17
+N14:
+move $a0,$fp
+move $a1,r23
+jal N3
+move r27,$v0
+j N16
+N18:
+
+LABEL N19
+]
+"
+
+LABEL N20
+, "
+
+LABEL N21
+N22:
+la r34,N1
+beq r35,r34,N23
+N24:
+lw r36,-4($fp)
+lw r37,-4(r36)
+lw r38,0(r37)
+la r39,N20
+move $a0,r38
+move $a1,r39
+jal $Print$$
+lw r40,-4($fp)
+lw r41,-4(r40)
+move r42,r35
+la r43,N1
+beq r42,r43,N25
+N26:
+lw r44,0(r42)
+move $a0,r41
+move $a1,r44
+jal N10
+lw r45,-4($fp)
+move r46,r35
+la r47,N1
+beq r46,r47,N27
+N28:
+lw r48,4(r46)
+move $a0,r45
+move $a1,r48
+jal N21
+move r49,$v0
+N29:
+move $v0,r49
+j N30
+N23:
+lw r50,-4($fp)
+lw r51,-4(r50)
+lw r52,0(r51)
+la r53,N19
+move $a0,r52
+move $a1,r53
+jal $Print$$
+move r49,$v0
+j N29
+N25:
+jal $NullExit$$
+j N30
+N27:
+jal $NullExit$$
+j N30
+N30:
+
+LABEL N31
+[]
+"
+
+LABEL N32
+["
+
+LABEL N33
+N34:
+la r54,N1
+beq r55,r54,N35
+N36:
+lw r56,-4($fp)
+lw r57,0(r56)
+la r58,N32
+move $a0,r57
+move $a1,r58
+jal $Print$$
+lw r59,-4($fp)
+move r60,r55
+la r61,N1
+beq r60,r61,N37
+N38:
+lw r62,0(r60)
+move $a0,r59
+move $a1,r62
+jal N10
+move r63,$fp
+move r64,r55
+la r65,N1
+beq r64,r65,N39
+N40:
+lw r66,4(r64)
+move $a0,r63
+move $a1,r66
+jal N21
+move r67,$v0
+N41:
+move $v0,r67
+j N42
+N35:
+lw r68,-4($fp)
+lw r69,0(r68)
+la r70,N31
+move $a0,r69
+move $a1,r70
+jal $Print$$
+move r67,$v0
+j N41
+N37:
+jal $NullExit$$
+j N42
+N39:
+jal $NullExit$$
+j N42
+N42:
+
+LABEL N43
+N44:
+la r71,N1
+beq r72,r71,N45
+N46:
+li r73,8
+move $a0,r73
+jal $Malloc$$
+move r74,$v0
+move r75, r74
+move r76,r75
+move r77,r72
+la r78,N1
+beq r77,r78,N47
+N48:
+lw r79,0(r77)
+sw r79,(r76)
+addi r80,r74,4
+move r81,r80
+lw r82,-8($fp)
+move r83,r72
+la r84,N1
+beq r83,r84,N49
+N50:
+lw r85,4(r83)
+move $a0,r82
+move $a1,r85
+move $a2,r86
+jal N43
+move r87,$v0
+sw r87,(r81)
+move r88,r74
+move r89,r88
+N51:
+move $v0,r89
+j N52
+N45:
+move r89,r86
+j N51
+N47:
+jal $NullExit$$
+j N52
+N49:
+jal $NullExit$$
+j N52
+N52:
+
+LABEL $Main$$
+N53:
+la r90,N1
+li r91,8
+move $a0,r91
+jal $Malloc$$
+move r92,$v0
+li r93,0
+sw r93,0(r92)
+addi r94,r92,4
+move r95,r94
+li r96,8
+move $a0,r96
+jal $Malloc$$
+move r97,$v0
+li r98,1
+sw r98,0(r97)
+addi r99,r97,4
+move r100,r99
+li r101,8
+move $a0,r101
+jal $Malloc$$
+move r102,$v0
+li r103,2
+sw r103,0(r102)
+la r104,N1
+sw r104,4(r102)
+sw r102,(r100)
+sw r97,(r95)
+move r105,r92
+li r106,8
+move $a0,r106
+jal $Malloc$$
+move r107,$v0
+li r108,3
+sw r108,0(r107)
+addi r109,r107,4
+move r110,r109
+li r111,8
+move $a0,r111
+jal $Malloc$$
+move r112,$v0
+li r113,4
+sw r113,0(r112)
+addi r114,r112,4
+move r115,r114
+li r116,8
+move $a0,r116
+jal $Malloc$$
+move r117,$v0
+li r118,5
+sw r118,0(r117)
+la r119,N1
+sw r119,4(r117)
+sw r117,(r115)
+sw r112,(r110)
+move r120,r107
+move $a0,$fp
+move $a1,r90
+jal N33
+move $a0,$fp
+move $a1,r105
+jal N33
+move $a0,$fp
+move $a1,r120
+jal N33
+move r121,$fp
+move $a0,$fp
+move $a1,r105
+move $a2,r120
+jal N43
+move r122,$v0
+move $a0,r121
+move $a1,r122
+jal N33
+move r123,$fp
+move $a0,$fp
+move $a1,r90
+move $a2,r120
+jal N43
+move r124,$v0
+move $a0,r123
+move $a1,r124
+jal N33
+move $v0,$v0
+j N54
+N54:
+

@@ -1,0 +1,21 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL $Main$$
+N2:
+li r0,8
+move $a0,r0
+jal $Malloc$$
+move r1,$v0
+li r2,0
+sw r2,0(r1)
+la r3,N1
+sw r3,4(r1)
+move r4,r1
+move $v0,r4
+j N3
+N3:
+

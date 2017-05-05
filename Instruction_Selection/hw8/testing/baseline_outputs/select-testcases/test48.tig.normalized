@@ -1,0 +1,24 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL N2
+N3:
+move $v0,r0
+j N4
+N4:
+
+LABEL N5
+N6:
+move $v0,r1
+j N7
+N7:
+
+LABEL $Main$$
+N8:
+li $v0,0
+j N9
+N9:
+

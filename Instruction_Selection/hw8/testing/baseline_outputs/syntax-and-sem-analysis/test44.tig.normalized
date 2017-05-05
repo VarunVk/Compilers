@@ -1,0 +1,14 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL $Main$$
+N2:
+la r0,N1
+la r0,N1
+li $v0,0
+j N3
+N3:
+

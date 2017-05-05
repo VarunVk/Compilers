@@ -1,0 +1,57 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL N2
+N3:
+lw r0,0($fp)
+lw r1,0(r0)
+bgt r1,100,N4
+N5:
+lw r2,0($fp)
+lw r3,-4(r2)
+lw r4,-8(r3)
+lw r5,0($fp)
+lw r6,-4(r5)
+sw r4,-8(r6)
+N6:
+li $v0,0
+j N7
+N4:
+li r7,5
+lw r8,0($fp)
+lw r9,-4(r8)
+sw r7,-8(r9)
+j N6
+N7:
+
+LABEL N8
+N9:
+li r10,10
+move $a0,$fp
+jal N2
+lw r11,0($fp)
+mul r12,r10,r11
+lw r13,-4($fp)
+lw r14,-8(r13)
+mul r15,r12,r14
+move $v0,r15
+j N10
+N10:
+
+LABEL $Main$$
+N11:
+li r16,2
+sw r16,-8($fp)
+li r17,250
+move $a0,$fp
+move $a1,r17
+jal N8
+move r18,$v0
+addi r19,r18,20
+move $v0,r19
+j N12
+N12:
+

@@ -1,0 +1,50 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL $Main$$
+N2:
+la r0,N1
+move r1,r0
+la r2,N1
+beq r1,r2,N3
+N4:
+lw r3,4(r1)
+la r4,N1
+bne r3,r4,N5
+N6:
+move r5,r0
+la r6,N1
+beq r5,r6,N7
+N8:
+lw r7,0(r5)
+N9:
+move $v0,r7
+j N10
+N3:
+jal $NullExit$$
+j N10
+N5:
+move r8,r0
+la r9,N1
+beq r8,r9,N11
+N12:
+lw r10,4(r8)
+la r11,N1
+beq r10,r11,N13
+N14:
+lw r7,0(r10)
+j N9
+N11:
+jal $NullExit$$
+j N10
+N13:
+jal $NullExit$$
+j N10
+N7:
+jal $NullExit$$
+j N10
+N10:
+

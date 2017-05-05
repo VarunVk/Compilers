@@ -1,0 +1,103 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL N2
+This is a simple print with 	 \"ZERO\" 
+"
+
+LABEL N3
+ASCII characters specified using the \ddd format: 
+"
+
+LABEL N4
+~~~~~~~~~~ 
+"
+
+LABEL N5
+{{{{{{{{{ 
+"
+
+LABEL N6
+This is for skipping sequence of characters. I want to continue to next line. We should  skip all things between the two \'s  
+"
+
+LABEL N7
+We are done - some control characters   
+"
+
+LABEL N8
+N9:
+beqz r0,N10
+N11:
+beq r0,1,N12
+N13:
+beq r0,2,N14
+N15:
+lw r1,-4($fp)
+lw r2,0(r1)
+la r3,N7
+move $a0,r2
+move $a1,r3
+jal $Print$$
+move r4,$v0
+N16:
+move r5,r4
+N17:
+move r6,r5
+N18:
+move $v0,r6
+j N19
+N10:
+lw r7,-4($fp)
+lw r8,0(r7)
+la r9,N2
+move $a0,r8
+move $a1,r9
+jal $Print$$
+move r6,$v0
+j N18
+N12:
+lw r10,-4($fp)
+lw r11,0(r10)
+la r12,N3
+move $a0,r11
+move $a1,r12
+jal $Print$$
+lw r13,-4($fp)
+lw r14,0(r13)
+la r15,N4
+move $a0,r14
+move $a1,r15
+jal $Print$$
+lw r16,-4($fp)
+lw r17,0(r16)
+la r18,N5
+move $a0,r17
+move $a1,r18
+jal $Print$$
+move r5,$v0
+j N17
+N14:
+lw r19,-4($fp)
+lw r20,0(r19)
+la r21,N6
+move $a0,r20
+move $a1,r21
+jal $Print$$
+move r4,$v0
+j N16
+N19:
+
+LABEL $Main$$
+N20:
+li r22,3
+move $a0,$fp
+move $a1,r22
+jal N8
+move $v0,$v0
+j N21
+N21:
+

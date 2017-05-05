@@ -1,0 +1,3 @@
+CM.make "sources.cm";
+Compile.compile "/home/vijay094/ws/Compilers/Parser/testcases/translation/for.tig" "2";
+

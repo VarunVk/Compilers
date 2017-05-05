@@ -1,0 +1,19 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL $Main$$
+N2:
+N3:
+j N4
+N5:
+li $v0,0
+j N6
+N4:
+li r0,3
+la r1,N0
+j N3
+N6:
+

@@ -1,0 +1,99 @@
+Standard ML of New Jersey v110.78 [built: Mon Jan 23 18:02:06 2017]
+- [autoloading]
+[library $smlnj/cm/cm.cm is stable]
+[library $smlnj/internal/cm-sig-lib.cm is stable]
+[library $/pgraph.cm is stable]
+[library $smlnj/internal/srcpath-lib.cm is stable]
+[library $SMLNJ-BASIS/basis.cm is stable]
+[autoloading done]
+[scanning ../../hw8/sources.cm]
+[attempting to load plugin $/lex-ext.cm]
+[library $/lex-ext.cm is stable]
+[library $smlnj/cm/tools.cm is stable]
+[library $smlnj/internal/cm-lib.cm is stable]
+[plugin $/lex-ext.cm loaded successfully]
+[attempting to load plugin $/mllex-tool.cm]
+[library $/mllex-tool.cm is stable]
+[plugin $/mllex-tool.cm loaded successfully]
+[parsing ../../hw8/(sources.cm):tiger.lex.sml]
+[attempting to load plugin $/grm-ext.cm]
+[library $/grm-ext.cm is stable]
+[plugin $/grm-ext.cm loaded successfully]
+[attempting to load plugin $/mlyacc-tool.cm]
+[library $/mlyacc-tool.cm is stable]
+[plugin $/mlyacc-tool.cm loaded successfully]
+[parsing ../../hw8/(sources.cm):tiger.grm.sig]
+[parsing ../../hw8/(sources.cm):tiger.grm.sml]
+[parsing ../../hw8/(sources.cm):semant.sml]
+[parsing ../../hw8/(sources.cm):translate.sml]
+[parsing ../../hw8/(sources.cm):compile.sml]
+../../hw8/compile.sml:4.1-4.58 Warning: definition not tracked by CM
+../../hw8/compile.sml:5.1-5.94 Warning: definition not tracked by CM
+[library $/ml-yacc-lib.cm is stable]
+[library $SMLNJ-LIB/Util/smlnj-lib.cm is stable]
+[library $SMLNJ-ML-YACC-LIB/ml-yacc-lib.cm is stable]
+[loading ../../hw8/(sources.cm):table.sig]
+[loading ../../hw8/(sources.cm):table.sml]
+[loading ../../hw8/(sources.cm):symbol.sml]
+[loading ../../hw8/(sources.cm):temp.sig]
+[loading ../../hw8/(sources.cm):temp.sml]
+[loading ../../hw8/(sources.cm):tree.sml]
+[loading ../../hw8/(sources.cm):errormsg.sml]
+[loading ../../hw8/(sources.cm):assem.sml]
+[loading ../../hw8/(sources.cm):mipsregs.sig]
+[loading ../../hw8/(sources.cm):frame.sig]
+[loading ../../hw8/(sources.cm):mipscodegen.sml]
+[loading ../../hw8/(sources.cm):absyn.sml]
+[compiling ../../hw8/(sources.cm):tiger.grm.sig]
+[code: 68, env: 981 bytes]
+[compiling ../../hw8/(sources.cm):tiger.grm.sml]
+[code: 63912, data: 4764, env: 4541 bytes]
+[compiling ../../hw8/(sources.cm):tiger.lex.sml]
+../../hw8/tiger.lex.sml:149.18-153.41 Warning: match nonexhaustive
+          (_,0) => ...
+          (hd :: tl,n) => ...
+  
+[code: 143173, data: 1165, env: 3322 bytes]
+[loading ../../hw8/(sources.cm):escape.sml]
+[loading ../../hw8/(sources.cm):mipsregs.sml]
+[loading ../../hw8/(sources.cm):mipsframe.sml]
+[loading ../../hw8/(sources.cm):canon.sig]
+[loading ../../hw8/(sources.cm):canon.sml]
+[loading ../../hw8/(sources.cm):translate.sig]
+[compiling ../../hw8/(sources.cm):translate.sml]
+../../hw8/translate.sml:83.7-86.26 Warning: match nonexhaustive
+          Ex (CONST 0) => ...
+          Ex (CONST 1) => ...
+          Ex e => ...
+          Cx stm => ...
+  
+../../hw8/translate.sml:40.8-41.40 Warning: match nonexhaustive
+          (level as Other (frame,_,_),esc) => ...
+  
+../../hw8/translate.sml:37.8-38.56 Warning: match nonexhaustive
+          level as Other (frame,_,_) => ...
+  
+../../hw8/translate.sml:35.8-35.44 Warning: match nonexhaustive
+          Other (_,parent,_) => ...
+  
+../../hw8/translate.sml:33.8-33.49 Warning: match nonexhaustive
+          Other (frame,_,_) => ...
+  
+[code: 32423, data: 531, env: 2379 bytes]
+[loading ../../hw8/(sources.cm):env.sml]
+[compiling ../../hw8/(sources.cm):semant.sml]
+../../hw8/semant.sml:388.5-391.104 Warning: match nonexhaustive
+          SOME (VarEntry {access=access,read_only=_,ty=ty}) => ...
+          NONE => ...
+  
+../../hw8/semant.sml:410.44 Warning: calling polyEqual
+[code: 62204, data: 2936, env: 887 bytes]
+[compiling ../../hw8/(sources.cm):compile.sml]
+[code: 25018, data: 410, env: 26601 bytes]
+[New bindings added.]
+val it = true : bool
+Compiling... for.tig.....
+Simple variable declaration: a
+Done processing Let decs.
+val it = () : unit
+- 

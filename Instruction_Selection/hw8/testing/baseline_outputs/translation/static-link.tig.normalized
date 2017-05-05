@@ -1,0 +1,39 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL N2
+N3:
+lw r0,0($fp)
+move $a0,r0
+jal N2
+move $v0,$v0
+j N4
+N4:
+
+LABEL N5
+N6:
+lw r1,0($fp)
+move $a0,r1
+jal N2
+move $v0,$v0
+j N7
+N7:
+
+LABEL N8
+N9:
+la r2,N0
+li $v0,0
+j N10
+N10:
+
+LABEL $Main$$
+N11:
+move $a0,$fp
+jal N8
+move $v0,$v0
+j N12
+N12:
+

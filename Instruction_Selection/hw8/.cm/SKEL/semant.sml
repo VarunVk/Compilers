@@ -1,0 +1,2 @@
+Skeleton 5
+d2aã¢SEMANT"h0ae"SemantFun"i6aä¢A"gp1c"ABSYN"Caä¢E"gp1c"ENV"aä¢Symbol"gp1c"SYMBOL"aä¢Tr"gp1c"TRANSLATE"aä¢T"gp1c"TEMP"f8ÿÿ/ÿ(Cÿd"List"d"String"ÿ=d"ErrorMsg"NNjh2ad"S"gp1ÿ=ad"Env"gp1ÿ/gp1ÿ

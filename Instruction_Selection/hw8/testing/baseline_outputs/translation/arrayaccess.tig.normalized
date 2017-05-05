@@ -1,0 +1,90 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL $Main$$
+N2:
+li r0,10
+li r1,0
+bltz r0,N3
+N4:
+move $a0,r0
+move $a1,r1
+jal $InitArray$$
+move r2,$v0
+li r3,5
+li r4,6
+bltz r3,N5
+N6:
+move $a0,r3
+move $a1,r4
+jal $InitArray$$
+move r5,$v0
+li r6,2
+move r7,r2
+li r8,3
+lw r9,(r7)
+ble r9,r8,N7
+N8:
+bltz r8,N9
+N10:
+li r10,5
+li r11,4
+addi r12,r8,1
+mul r13,r11,r12
+add r14,r7,r13
+sw r10,(r14)
+move r15,r2
+move r16,r5
+li r17,3
+lw r18,(r16)
+ble r18,r17,N11
+N12:
+bltz r17,N13
+N14:
+li r19,4
+addi r20,r17,1
+mul r21,r19,r20
+add r22,r16,r21
+lw r23,(r22)
+lw r24,(r15)
+ble r24,r23,N15
+N16:
+bltz r23,N17
+N18:
+li r25,7
+li r26,4
+addi r27,r23,1
+mul r28,r26,r27
+add r29,r15,r28
+sw r25,(r29)
+li $v0,0
+j N19
+N3:
+jal $SizeError$$
+j N19
+N5:
+jal $SizeError$$
+j N19
+N7:
+jal $UpperBoundExit$$
+j N19
+N9:
+jal $LowerBoundExit$$
+j N19
+N11:
+jal $UpperBoundExit$$
+j N19
+N13:
+jal $LowerBoundExit$$
+j N19
+N15:
+jal $UpperBoundExit$$
+j N19
+N17:
+jal $LowerBoundExit$$
+j N19
+N19:
+

@@ -1,0 +1,402 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL N2
+0"
+
+LABEL N3
+N4:
+bgtz r0,N5
+N6:
+li $v0,0
+j N7
+N5:
+lw r1,-4($fp)
+li r2,10
+div r3,r0,r2
+move $a0,r1
+move $a1,r3
+jal N3
+lw r4,-4($fp)
+lw r5,-4(r4)
+lw r6,0(r5)
+lw r7,-4($fp)
+lw r8,-4(r7)
+lw r9,0(r8)
+li r10,10
+div r11,r0,r10
+li r12,10
+mul r13,r11,r12
+sub r14,r0,r13
+move r15,r14
+lw r16,-4($fp)
+lw r17,-4(r16)
+lw r18,0(r17)
+la r19,N2
+move $a0,r18
+move $a1,r19
+jal $Ord$$
+move r20,$v0
+add r21,r15,r20
+move $a0,r9
+move $a1,r21
+jal $Chr$$
+move r22,$v0
+move $a0,r6
+move $a1,r22
+jal $Print$$
+j N6
+N7:
+
+LABEL N8
+-"
+
+LABEL N9
+0"
+
+LABEL N10
+N11:
+bltz r23,N12
+N13:
+bgtz r23,N14
+N15:
+lw r24,-4($fp)
+lw r25,0(r24)
+la r26,N9
+move $a0,r25
+move $a1,r26
+jal $Print$$
+move r27,$v0
+N16:
+move r28,r27
+N17:
+move $v0,r28
+j N18
+N12:
+lw r29,-4($fp)
+lw r30,0(r29)
+la r31,N8
+move $a0,r30
+move $a1,r31
+jal $Print$$
+li r32,0
+sub r33,r32,r23
+move $a0,$fp
+move $a1,r33
+jal N3
+move r28,$v0
+j N17
+N14:
+move $a0,$fp
+move $a1,r23
+jal N3
+move r27,$v0
+j N16
+N18:
+
+LABEL N19
+
+"
+
+LABEL N20
+
+"
+
+LABEL N21
+
+"
+
+LABEL N22
+
+"
+
+LABEL N23
+
+"
+
+LABEL N24
+
+"
+
+LABEL N25
+
+"
+
+LABEL $Main$$
+N26:
+li r34,10
+li r35,0
+bltz r34,N27
+N28:
+move $a0,r34
+move $a1,r35
+jal $InitArray$$
+move r36,$v0
+li r37,5
+li r38,6
+bltz r37,N29
+N30:
+move $a0,r37
+move $a1,r38
+jal $InitArray$$
+move r39,$v0
+li r40,2
+move r41,r36
+li r42,3
+lw r43,(r41)
+ble r43,r42,N31
+N32:
+bltz r42,N33
+N34:
+li r44,5
+li r45,4
+addi r46,r42,1
+mul r47,r45,r46
+add r48,r41,r47
+sw r44,(r48)
+move r49,r36
+li r50,6
+lw r51,(r49)
+ble r51,r50,N35
+N36:
+bltz r50,N37
+N38:
+li r52,7
+li r53,4
+addi r54,r50,1
+mul r55,r53,r54
+add r56,r49,r55
+sw r52,(r56)
+move r57,$fp
+move r58,r36
+li r59,5
+lw r60,(r58)
+ble r60,r59,N39
+N40:
+bltz r59,N41
+N42:
+li r61,4
+addi r62,r59,1
+mul r63,r61,r62
+add r64,r58,r63
+lw r65,(r64)
+move $a0,r57
+move $a1,r65
+jal N10
+lw r66,0($fp)
+la r67,N19
+move $a0,r66
+move $a1,r67
+jal $Print$$
+move r68,$fp
+move r69,r36
+li r70,0
+lw r71,(r69)
+ble r71,r70,N43
+N44:
+bltz r70,N45
+N46:
+li r72,4
+addi r73,r70,1
+mul r74,r72,r73
+add r75,r69,r74
+lw r76,(r75)
+move $a0,r68
+move $a1,r76
+jal N10
+lw r77,0($fp)
+la r78,N20
+move $a0,r77
+move $a1,r78
+jal $Print$$
+move r79,$fp
+move r80,r36
+li r81,9
+lw r82,(r80)
+ble r82,r81,N47
+N48:
+bltz r81,N49
+N50:
+li r83,4
+addi r84,r81,1
+mul r85,r83,r84
+add r86,r80,r85
+lw r87,(r86)
+move $a0,r79
+move $a1,r87
+jal N10
+lw r88,0($fp)
+la r89,N21
+move $a0,r88
+move $a1,r89
+jal $Print$$
+move r90,$fp
+move r91,r39
+li r92,4
+lw r93,(r91)
+ble r93,r92,N51
+N52:
+bltz r92,N53
+N54:
+li r94,4
+addi r95,r92,1
+mul r96,r94,r95
+add r97,r91,r96
+lw r98,(r97)
+move $a0,r90
+move $a1,r98
+jal N10
+lw r99,0($fp)
+la r100,N22
+move $a0,r99
+move $a1,r100
+jal $Print$$
+move r101,$fp
+move r102,r36
+addi r103,r40,1
+move r104,r103
+lw r105,(r102)
+ble r105,r104,N55
+N56:
+bltz r104,N57
+N58:
+li r106,4
+addi r107,r104,1
+mul r108,r106,r107
+add r109,r102,r108
+lw r110,(r109)
+move $a0,r101
+move $a1,r110
+jal N10
+lw r111,0($fp)
+la r112,N23
+move $a0,r111
+move $a1,r112
+jal $Print$$
+move r113,$fp
+move r114,r36
+move r115,r39
+li r116,3
+lw r117,(r115)
+ble r117,r116,N59
+N60:
+bltz r116,N61
+N62:
+li r118,4
+addi r119,r116,1
+mul r120,r118,r119
+add r121,r115,r120
+lw r122,(r121)
+lw r123,(r114)
+ble r123,r122,N63
+N64:
+bltz r122,N65
+N66:
+li r124,4
+addi r125,r122,1
+mul r126,r124,r125
+add r127,r114,r126
+lw r128,(r127)
+move $a0,r113
+move $a1,r128
+jal N10
+lw r129,0($fp)
+la r130,N24
+move $a0,r129
+move $a1,r130
+jal $Print$$
+move r131,$fp
+move r132,r36
+addi r133,r40,8
+move r134,r133
+lw r135,(r132)
+ble r135,r134,N67
+N68:
+bltz r134,N69
+N70:
+li r136,4
+addi r137,r134,1
+mul r138,r136,r137
+add r139,r132,r138
+lw r140,(r139)
+move $a0,r131
+move $a1,r140
+jal N10
+lw r141,0($fp)
+la r142,N25
+move $a0,r141
+move $a1,r142
+jal $Print$$
+move $v0,$v0
+j N71
+N27:
+jal $SizeError$$
+j N71
+N29:
+jal $SizeError$$
+j N71
+N31:
+jal $UpperBoundExit$$
+j N71
+N33:
+jal $LowerBoundExit$$
+j N71
+N35:
+jal $UpperBoundExit$$
+j N71
+N37:
+jal $LowerBoundExit$$
+j N71
+N39:
+jal $UpperBoundExit$$
+j N71
+N41:
+jal $LowerBoundExit$$
+j N71
+N43:
+jal $UpperBoundExit$$
+j N71
+N45:
+jal $LowerBoundExit$$
+j N71
+N47:
+jal $UpperBoundExit$$
+j N71
+N49:
+jal $LowerBoundExit$$
+j N71
+N51:
+jal $UpperBoundExit$$
+j N71
+N53:
+jal $LowerBoundExit$$
+j N71
+N55:
+jal $UpperBoundExit$$
+j N71
+N57:
+jal $LowerBoundExit$$
+j N71
+N59:
+jal $UpperBoundExit$$
+j N71
+N61:
+jal $LowerBoundExit$$
+j N71
+N63:
+jal $UpperBoundExit$$
+j N71
+N65:
+jal $LowerBoundExit$$
+j N71
+N67:
+jal $UpperBoundExit$$
+j N71
+N69:
+jal $LowerBoundExit$$
+j N71
+N71:
+

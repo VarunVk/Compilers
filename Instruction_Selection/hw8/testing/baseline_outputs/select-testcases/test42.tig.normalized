@@ -1,0 +1,288 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL N2
+aname"
+
+LABEL N3
+somewhere"
+
+LABEL N4
+"
+
+LABEL N5
+Kapoios"
+
+LABEL N6
+Kapou"
+
+LABEL N7
+Allos"
+
+LABEL N8
+kati"
+
+LABEL N9
+sfd"
+
+LABEL N10
+sdf"
+
+LABEL $Main$$
+N11:
+li r0,10
+li r1,0
+bltz r0,N12
+N13:
+move $a0,r0
+move $a1,r1
+jal $InitArray$$
+move r2,$v0
+li r3,5
+li r4,16
+move $a0,r4
+jal $Malloc$$
+move r5,$v0
+la r6,N2
+sw r6,0(r5)
+la r7,N3
+sw r7,4(r5)
+li r8,0
+sw r8,8(r5)
+li r9,0
+sw r9,12(r5)
+move r10,r5
+bltz r3,N14
+N15:
+move $a0,r3
+move $a1,r10
+jal $InitArray$$
+move r11,$v0
+li r12,100
+la r13,N4
+bltz r12,N16
+N17:
+move $a0,r12
+move $a1,r13
+jal $InitArray$$
+move r14,$v0
+li r15,16
+move $a0,r15
+jal $Malloc$$
+move r16,$v0
+la r17,N5
+sw r17,0(r16)
+la r18,N6
+sw r18,4(r16)
+li r19,2432
+sw r19,8(r16)
+li r20,44
+sw r20,12(r16)
+move r21,r16
+li r22,8
+move $a0,r22
+jal $Malloc$$
+move r23,$v0
+la r24,N7
+sw r24,0(r23)
+addi r25,r23,4
+move r26,r25
+li r27,3
+li r28,1900
+bltz r27,N18
+N19:
+move $a0,r27
+move $a1,r28
+jal $InitArray$$
+move r29,$v0
+sw r29,(r26)
+move r30,r23
+move r31,r2
+li r32,0
+lw r33,(r31)
+ble r33,r32,N20
+N21:
+bltz r32,N22
+N23:
+li r34,1
+li r35,4
+addi r36,r32,1
+mul r37,r35,r36
+add r38,r31,r37
+sw r34,(r38)
+move r39,r2
+li r40,9
+lw r41,(r39)
+ble r41,r40,N24
+N25:
+bltz r40,N26
+N27:
+li r42,3
+li r43,4
+addi r44,r40,1
+mul r45,r43,r44
+add r46,r39,r45
+sw r42,(r46)
+move r47,r11
+li r48,3
+lw r49,(r47)
+ble r49,r48,N28
+N29:
+bltz r48,N30
+N31:
+li r50,4
+addi r51,r48,1
+mul r52,r50,r51
+add r53,r47,r52
+lw r54,(r53)
+la r55,N1
+beq r54,r55,N32
+N33:
+la r56,N8
+sw r56,0(r54)
+move r57,r11
+li r58,1
+lw r59,(r57)
+ble r59,r58,N34
+N35:
+bltz r58,N36
+N37:
+li r60,4
+addi r61,r58,1
+mul r62,r60,r61
+add r63,r57,r62
+lw r64,(r63)
+la r65,N1
+beq r64,r65,N38
+N39:
+li r66,23
+sw r66,12(r64)
+move r67,r14
+li r68,34
+lw r69,(r67)
+ble r69,r68,N40
+N41:
+bltz r68,N42
+N43:
+la r70,N9
+li r71,4
+addi r72,r68,1
+mul r73,r71,r72
+add r74,r67,r73
+sw r70,(r74)
+move r75,r21
+la r76,N1
+beq r75,r76,N44
+N45:
+la r77,N10
+sw r77,0(r75)
+move r78,r30
+la r79,N1
+beq r78,r79,N46
+N47:
+lw r80,4(r78)
+li r81,0
+lw r82,(r80)
+ble r82,r81,N48
+N49:
+bltz r81,N50
+N51:
+li r83,2323
+li r84,4
+addi r85,r81,1
+mul r86,r84,r85
+add r87,r80,r86
+sw r83,(r87)
+move r88,r30
+la r89,N1
+beq r88,r89,N52
+N53:
+lw r90,4(r88)
+li r91,2
+lw r92,(r90)
+ble r92,r91,N54
+N55:
+bltz r91,N56
+N57:
+li r93,2323
+li r94,4
+addi r95,r91,1
+mul r96,r94,r95
+add r97,r90,r96
+sw r93,(r97)
+li $v0,0
+j N58
+N12:
+jal $SizeError$$
+j N58
+N14:
+jal $SizeError$$
+j N58
+N16:
+jal $SizeError$$
+j N58
+N18:
+jal $SizeError$$
+j N58
+N20:
+jal $UpperBoundExit$$
+j N58
+N22:
+jal $LowerBoundExit$$
+j N58
+N24:
+jal $UpperBoundExit$$
+j N58
+N26:
+jal $LowerBoundExit$$
+j N58
+N28:
+jal $UpperBoundExit$$
+j N58
+N30:
+jal $LowerBoundExit$$
+j N58
+N32:
+jal $NullExit$$
+j N58
+N34:
+jal $UpperBoundExit$$
+j N58
+N36:
+jal $LowerBoundExit$$
+j N58
+N38:
+jal $NullExit$$
+j N58
+N40:
+jal $UpperBoundExit$$
+j N58
+N42:
+jal $LowerBoundExit$$
+j N58
+N44:
+jal $NullExit$$
+j N58
+N46:
+jal $NullExit$$
+j N58
+N48:
+jal $UpperBoundExit$$
+j N58
+N50:
+jal $LowerBoundExit$$
+j N58
+N52:
+jal $NullExit$$
+j N58
+N54:
+jal $UpperBoundExit$$
+j N58
+N56:
+jal $LowerBoundExit$$
+j N58
+N58:
+

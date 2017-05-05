@@ -1,0 +1,20 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL $Main$$
+N2:
+li r0,20
+blt r0,10,N3
+N4:
+li r1,40
+N5:
+move $v0,r1
+j N6
+N3:
+li r1,30
+j N5
+N6:
+

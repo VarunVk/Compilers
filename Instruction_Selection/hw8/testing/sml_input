@@ -1,0 +1,2 @@
+CM.make "../../hw8/sources.cm";
+Compile.compileAll "files.list";

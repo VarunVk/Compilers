@@ -1,0 +1,520 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL N2
+0"
+
+LABEL N3
+9"
+
+LABEL N4
+N5:
+li r0,1
+lw r1,-4($fp)
+lw r2,-4(r1)
+lw r3,0(r2)
+move $a0,r3
+move $a1,r4
+jal $Ord$$
+move r5,$v0
+move r6,r5
+lw r7,-4($fp)
+lw r8,-4(r7)
+lw r9,0(r8)
+la r10,N2
+move $a0,r9
+move $a1,r10
+jal $Ord$$
+move r11,$v0
+bge r6,r11,N6
+N7:
+N8:
+li r0,0
+N9:
+move $v0,r0
+j N10
+N6:
+lw r12,-4($fp)
+lw r13,-4(r12)
+lw r14,0(r13)
+move $a0,r14
+move $a1,r4
+jal $Ord$$
+move r15,$v0
+move r16,r15
+lw r17,-4($fp)
+lw r18,-4(r17)
+lw r19,0(r18)
+la r20,N3
+move $a0,r19
+move $a1,r20
+jal $Ord$$
+move r21,$v0
+ble r16,r21,N9
+N11:
+j N8
+N10:
+
+LABEL N12
+ "
+
+LABEL N13
+
+"
+
+LABEL N14
+N15:
+N16:
+lw r22,0($fp)
+lw r23,-4(r22)
+lw r24,-8(r23)
+la r25,N12
+move $a0,r24
+move $a1,r25
+jal $StringEqual$$
+move r26,$v0
+beqz r26,N17
+N18:
+N19:
+lw r27,0($fp)
+lw r28,-4(r27)
+addi r29,r28,-8
+move r30,r29
+lw r31,0($fp)
+lw r32,-4(r31)
+lw r33,0(r32)
+move $a0,r33
+jal $GetChar$$
+move r34,$v0
+sw r34,(r30)
+j N16
+N17:
+lw r35,0($fp)
+lw r36,-4(r35)
+lw r37,-8(r36)
+la r38,N13
+move $a0,r37
+move $a1,r38
+jal $StringEqual$$
+move r39,$v0
+bnez r39,N19
+N20:
+li $v0,0
+j N21
+N21:
+
+LABEL N22
+0"
+
+LABEL N23
+N24:
+li r40,0
+move $a0,$fp
+jal N14
+move r41,r42
+la r43,N1
+beq r41,r43,N25
+N26:
+move r44, r41
+move r45,r44
+lw r46,-4($fp)
+lw r47,-8(r46)
+move $a0,$fp
+move $a1,r47
+jal N4
+move r48,$v0
+sw r48,(r45)
+N27:
+lw r49,-4($fp)
+lw r50,-8(r49)
+move $a0,$fp
+move $a1,r50
+jal N4
+move r51,$v0
+li r52,0
+beq r52,r51,N28
+N29:
+li r53,10
+mul r54,r40,r53
+move r55,r54
+lw r56,-4($fp)
+lw r57,0(r56)
+lw r58,-4($fp)
+lw r59,-8(r58)
+move $a0,r57
+move $a1,r59
+jal $Ord$$
+move r60,$v0
+add r61,r55,r60
+move r62,r61
+lw r63,-4($fp)
+lw r64,0(r63)
+la r65,N22
+move $a0,r64
+move $a1,r65
+jal $Ord$$
+move r66,$v0
+sub r67,r62,r66
+move r40,r67
+lw r68,-4($fp)
+addi r69,r68,-8
+move r70,r69
+lw r71,-4($fp)
+lw r72,0(r71)
+move $a0,r72
+jal $GetChar$$
+move r73,$v0
+sw r73,(r70)
+j N27
+N25:
+jal $NullExit$$
+j N30
+N28:
+move $v0,r40
+j N30
+N30:
+
+LABEL N31
+N32:
+li r74,4
+move $a0,r74
+jal $Malloc$$
+move r75,$v0
+li r76,0
+sw r76,0(r75)
+move r77,r75
+lw r78,0($fp)
+move $a0,r78
+move $a1,r77
+jal N23
+move r79,$v0
+move r80,r77
+la r81,N1
+beq r80,r81,N33
+N34:
+li r82,0
+lw r83,0(r80)
+beq r82,r83,N35
+N36:
+li r84,8
+move $a0,r84
+jal $Malloc$$
+move r85,$v0
+sw r79,0(r85)
+addi r86,r85,4
+move r87,r86
+lw r88,0($fp)
+move $a0,r88
+jal N31
+move r89,$v0
+sw r89,(r87)
+move r90,r85
+N37:
+move $v0,r90
+j N38
+N33:
+jal $NullExit$$
+j N38
+N35:
+la r90,N1
+j N37
+N38:
+
+LABEL N39
+N40:
+la r91,N1
+beq r92,r91,N41
+N42:
+la r93,N1
+beq r94,r93,N43
+N44:
+move r95,r92
+la r96,N1
+beq r95,r96,N45
+N46:
+lw r97,0(r95)
+move r98,r94
+la r99,N1
+beq r98,r99,N47
+N48:
+lw r100,0(r98)
+blt r97,r100,N49
+N50:
+li r101,8
+move $a0,r101
+jal $Malloc$$
+move r102,$v0
+move r103, r102
+move r104,r103
+move r105,r94
+la r106,N1
+beq r105,r106,N51
+N52:
+lw r107,0(r105)
+sw r107,(r104)
+addi r108,r102,4
+move r109,r108
+lw r110,-8($fp)
+move r111,r92
+move r112,r94
+la r113,N1
+beq r112,r113,N53
+N54:
+lw r114,4(r112)
+move $a0,r110
+move $a1,r111
+move $a2,r114
+jal N39
+move r115,$v0
+sw r115,(r109)
+move r116,r102
+N55:
+move r117,r116
+N56:
+move r118,r117
+N57:
+move $v0,r118
+j N58
+N41:
+move r118,r94
+j N57
+N43:
+move r117,r92
+j N56
+N45:
+jal $NullExit$$
+j N58
+N47:
+jal $NullExit$$
+j N58
+N49:
+li r119,8
+move $a0,r119
+jal $Malloc$$
+move r120,$v0
+move r121, r120
+move r122,r121
+move r123,r92
+la r124,N1
+beq r123,r124,N59
+N60:
+lw r125,0(r123)
+sw r125,(r122)
+addi r126,r120,4
+move r127,r126
+lw r128,-8($fp)
+move r129,r92
+la r130,N1
+beq r129,r130,N61
+N62:
+lw r131,4(r129)
+move $a0,r128
+move $a1,r131
+move $a2,r94
+jal N39
+move r132,$v0
+sw r132,(r127)
+move r116,r120
+j N55
+N59:
+jal $NullExit$$
+j N58
+N61:
+jal $NullExit$$
+j N58
+N51:
+jal $NullExit$$
+j N58
+N53:
+jal $NullExit$$
+j N58
+N58:
+
+LABEL N63
+0"
+
+LABEL N64
+N65:
+bgtz r133,N66
+N67:
+li $v0,0
+j N68
+N66:
+lw r134,-4($fp)
+li r135,10
+div r136,r133,r135
+move $a0,r134
+move $a1,r136
+jal N64
+lw r137,-4($fp)
+lw r138,-4(r137)
+lw r139,0(r138)
+lw r140,-4($fp)
+lw r141,-4(r140)
+lw r142,0(r141)
+li r143,10
+div r144,r133,r143
+li r145,10
+mul r146,r144,r145
+sub r147,r133,r146
+move r148,r147
+lw r149,-4($fp)
+lw r150,-4(r149)
+lw r151,0(r150)
+la r152,N63
+move $a0,r151
+move $a1,r152
+jal $Ord$$
+move r153,$v0
+add r154,r148,r153
+move $a0,r142
+move $a1,r154
+jal $Chr$$
+move r155,$v0
+move $a0,r139
+move $a1,r155
+jal $Print$$
+j N67
+N68:
+
+LABEL N69
+-"
+
+LABEL N70
+0"
+
+LABEL N71
+N72:
+bltz r156,N73
+N74:
+bgtz r156,N75
+N76:
+lw r157,-4($fp)
+lw r158,0(r157)
+la r159,N70
+move $a0,r158
+move $a1,r159
+jal $Print$$
+move r160,$v0
+N77:
+move r161,r160
+N78:
+move $v0,r161
+j N79
+N73:
+lw r162,-4($fp)
+lw r163,0(r162)
+la r164,N69
+move $a0,r163
+move $a1,r164
+jal $Print$$
+li r165,0
+sub r166,r165,r156
+move $a0,$fp
+move $a1,r166
+jal N64
+move r161,$v0
+j N78
+N75:
+move $a0,$fp
+move $a1,r156
+jal N64
+move r160,$v0
+j N77
+N79:
+
+LABEL N80
+
+"
+
+LABEL N81
+ "
+
+LABEL N82
+N83:
+la r167,N1
+beq r168,r167,N84
+N85:
+lw r169,-4($fp)
+move r170,r168
+la r171,N1
+beq r170,r171,N86
+N87:
+lw r172,0(r170)
+move $a0,r169
+move $a1,r172
+jal N71
+lw r173,-4($fp)
+lw r174,0(r173)
+la r175,N81
+move $a0,r174
+move $a1,r175
+jal $Print$$
+lw r176,-4($fp)
+move r177,r168
+la r178,N1
+beq r177,r178,N88
+N89:
+lw r179,4(r177)
+move $a0,r176
+move $a1,r179
+jal N82
+move r180,$v0
+N90:
+move $v0,r180
+j N91
+N84:
+lw r181,-4($fp)
+lw r182,0(r181)
+la r183,N80
+move $a0,r182
+move $a1,r183
+jal $Print$$
+move r180,$v0
+j N90
+N86:
+jal $NullExit$$
+j N91
+N88:
+jal $NullExit$$
+j N91
+N91:
+
+LABEL $Main$$
+N92:
+addi r184,$fp,-8
+move r185,r184
+lw r186,0($fp)
+move $a0,r186
+jal $GetChar$$
+move r187,$v0
+sw r187,(r185)
+move $a0,$fp
+jal N31
+move r188,$v0
+addi r189,$fp,-8
+move r190,r189
+lw r191,0($fp)
+move $a0,r191
+jal $GetChar$$
+move r192,$v0
+sw r192,(r190)
+move $a0,$fp
+jal N31
+move r193,$v0
+move r194,$fp
+move $a0,$fp
+move $a1,r188
+move $a2,r193
+jal N39
+move r195,$v0
+move $a0,r194
+move $a1,r195
+jal N82
+move $v0,$v0
+j N93
+N93:
+

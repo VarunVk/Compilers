@@ -1,0 +1,25 @@
+LABEL L1
+ "
+
+LABEL L0
+ "
+
+LABEL $Main$$
+L19:
+li t142, 0
+li t144, 0
+li t143, 100
+ble t144, t143,L17
+L16:
+li $v0, 0
+j L18
+L17:
+addi t145, t142, 1
+move t142, t145
+bge t144, t143,L16
+L15:
+addi t146, t144, 1
+move t144, t146
+j L17
+L18:
+

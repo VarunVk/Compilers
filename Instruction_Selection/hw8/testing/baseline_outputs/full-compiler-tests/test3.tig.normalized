@@ -1,0 +1,145 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL N2
+0"
+
+LABEL N3
+N4:
+bgtz r0,N5
+N6:
+li $v0,0
+j N7
+N5:
+lw r1,-4($fp)
+li r2,10
+div r3,r0,r2
+move $a0,r1
+move $a1,r3
+jal N3
+lw r4,-4($fp)
+lw r5,-4(r4)
+lw r6,0(r5)
+lw r7,-4($fp)
+lw r8,-4(r7)
+lw r9,0(r8)
+li r10,10
+div r11,r0,r10
+li r12,10
+mul r13,r11,r12
+sub r14,r0,r13
+move r15,r14
+lw r16,-4($fp)
+lw r17,-4(r16)
+lw r18,0(r17)
+la r19,N2
+move $a0,r18
+move $a1,r19
+jal $Ord$$
+move r20,$v0
+add r21,r15,r20
+move $a0,r9
+move $a1,r21
+jal $Chr$$
+move r22,$v0
+move $a0,r6
+move $a1,r22
+jal $Print$$
+j N6
+N7:
+
+LABEL N8
+-"
+
+LABEL N9
+0"
+
+LABEL N10
+N11:
+bltz r23,N12
+N13:
+bgtz r23,N14
+N15:
+lw r24,-4($fp)
+lw r25,0(r24)
+la r26,N9
+move $a0,r25
+move $a1,r26
+jal $Print$$
+move r27,$v0
+N16:
+move r28,r27
+N17:
+move $v0,r28
+j N18
+N12:
+lw r29,-4($fp)
+lw r30,0(r29)
+la r31,N8
+move $a0,r30
+move $a1,r31
+jal $Print$$
+li r32,0
+sub r33,r32,r23
+move $a0,$fp
+move $a1,r33
+jal N3
+move r28,$v0
+j N17
+N14:
+move $a0,$fp
+move $a1,r23
+jal N3
+move r27,$v0
+j N16
+N18:
+
+LABEL N19
+N20:
+beqz r34,N21
+N22:
+move r35,r34
+lw r36,-4($fp)
+li r37,1
+sub r38,r34,r37
+move $a0,r36
+move $a1,r38
+jal N19
+move r39,$v0
+mul r40,r35,r39
+move r41,r40
+N23:
+move $v0,r41
+j N24
+N21:
+li r41,1
+j N23
+N24:
+
+LABEL N25
+
+"
+
+LABEL $Main$$
+N26:
+move r42,$fp
+li r43,6
+move $a0,$fp
+move $a1,r43
+jal N19
+move r44,$v0
+move $a0,r42
+move $a1,r44
+jal N10
+lw r45,0($fp)
+la r46,N25
+move $a0,r45
+move $a1,r46
+jal $Print$$
+move $v0,$v0
+j N27
+N27:
+

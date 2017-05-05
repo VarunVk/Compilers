@@ -1,0 +1,425 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL N2
+ O"
+
+LABEL N3
+ ."
+
+LABEL N4
+
+"
+
+LABEL N5
+
+"
+
+LABEL N6
+N7:
+li r0,0
+lw r1,0($fp)
+lw r2,-8(r1)
+li r3,1
+sub r4,r2,r3
+move r5,r4
+ble r0,r5,N8
+N9:
+lw r6,0($fp)
+lw r7,0(r6)
+la r8,N5
+move $a0,r7
+move $a1,r8
+jal $Print$$
+move $v0,$v0
+j N10
+N8:
+li r9,0
+lw r10,0($fp)
+lw r11,-8(r10)
+li r12,1
+sub r13,r11,r12
+move r14,r13
+ble r9,r14,N11
+N12:
+lw r15,0($fp)
+lw r16,0(r15)
+la r17,N4
+move $a0,r16
+move $a1,r17
+jal $Print$$
+bge r0,r5,N9
+N13:
+addi r18,r0,1
+move r0,r18
+j N8
+N11:
+lw r19,0($fp)
+lw r20,0(r19)
+lw r21,0($fp)
+lw r22,-16(r21)
+move r23,r0
+lw r24,(r22)
+ble r24,r23,N14
+N15:
+bltz r23,N16
+N17:
+li r25,4
+addi r26,r23,1
+mul r27,r25,r26
+add r28,r22,r27
+lw r29,(r28)
+beq r29,r9,N18
+N19:
+la r30,N3
+N20:
+move $a0,r20
+move $a1,r30
+jal $Print$$
+bge r9,r14,N12
+N21:
+addi r31,r9,1
+move r9,r31
+j N11
+N14:
+jal $UpperBoundExit$$
+j N10
+N16:
+jal $LowerBoundExit$$
+j N10
+N18:
+la r30,N2
+j N20
+N10:
+
+LABEL N22
+N23:
+lw r32,-4($fp)
+lw r33,-8(r32)
+beq r34,r33,N24
+N25:
+li r35,0
+lw r36,-4($fp)
+lw r37,-8(r36)
+li r38,1
+sub r39,r37,r38
+move r40,r39
+ble r35,r40,N26
+N27:
+N28:
+li $v0,0
+j N29
+N24:
+lw r41,-4($fp)
+move $a0,r41
+jal N6
+j N28
+N26:
+lw r42,-4($fp)
+lw r43,-12(r42)
+move r44,r35
+lw r45,(r43)
+ble r45,r44,N30
+N31:
+bltz r44,N32
+N33:
+li r46,4
+addi r47,r44,1
+mul r48,r46,r47
+add r49,r43,r48
+lw r50,(r49)
+beqz r50,N34
+N35:
+N36:
+N37:
+bge r35,r40,N27
+N38:
+addi r51,r35,1
+move r35,r51
+j N26
+N30:
+jal $UpperBoundExit$$
+j N29
+N32:
+jal $LowerBoundExit$$
+j N29
+N34:
+lw r52,-4($fp)
+lw r53,-20(r52)
+add r54,r35,r34
+move r55,r54
+lw r56,(r53)
+ble r56,r55,N39
+N40:
+bltz r55,N41
+N42:
+li r57,4
+addi r58,r55,1
+mul r59,r57,r58
+add r60,r53,r59
+lw r61,(r60)
+bnez r61,N36
+N43:
+lw r62,-4($fp)
+lw r63,-24(r62)
+addi r64,r35,7
+sub r65,r64,r34
+move r66,r65
+lw r67,(r63)
+ble r67,r66,N44
+N45:
+bltz r66,N46
+N47:
+li r68,4
+addi r69,r66,1
+mul r70,r68,r69
+add r71,r63,r70
+lw r72,(r71)
+bnez r72,N37
+N48:
+lw r73,-4($fp)
+lw r74,-12(r73)
+move r75,r35
+lw r76,(r74)
+ble r76,r75,N49
+N50:
+bltz r75,N51
+N52:
+li r77,1
+li r78,4
+addi r79,r75,1
+mul r80,r78,r79
+add r81,r74,r80
+sw r77,(r81)
+lw r82,-4($fp)
+lw r83,-20(r82)
+add r84,r35,r34
+move r85,r84
+lw r86,(r83)
+ble r86,r85,N53
+N54:
+bltz r85,N55
+N56:
+li r87,1
+li r88,4
+addi r89,r85,1
+mul r90,r88,r89
+add r91,r83,r90
+sw r87,(r91)
+lw r92,-4($fp)
+lw r93,-24(r92)
+addi r94,r35,7
+sub r95,r94,r34
+move r96,r95
+lw r97,(r93)
+ble r97,r96,N57
+N58:
+bltz r96,N59
+N60:
+li r98,1
+li r99,4
+addi r100,r96,1
+mul r101,r99,r100
+add r102,r93,r101
+sw r98,(r102)
+lw r103,-4($fp)
+lw r104,-16(r103)
+move r105,r34
+lw r106,(r104)
+ble r106,r105,N61
+N62:
+bltz r105,N63
+N64:
+li r107,4
+addi r108,r105,1
+mul r109,r107,r108
+add r110,r104,r109
+sw r35,(r110)
+lw r111,-4($fp)
+addi r112,r34,1
+move $a0,r111
+move $a1,r112
+jal N22
+lw r113,-4($fp)
+lw r114,-12(r113)
+move r115,r35
+lw r116,(r114)
+ble r116,r115,N65
+N66:
+bltz r115,N67
+N68:
+li r117,0
+li r118,4
+addi r119,r115,1
+mul r120,r118,r119
+add r121,r114,r120
+sw r117,(r121)
+lw r122,-4($fp)
+lw r123,-20(r122)
+add r124,r35,r34
+move r125,r124
+lw r126,(r123)
+ble r126,r125,N69
+N70:
+bltz r125,N71
+N72:
+li r127,0
+li r128,4
+addi r129,r125,1
+mul r130,r128,r129
+add r131,r123,r130
+sw r127,(r131)
+lw r132,-4($fp)
+lw r133,-24(r132)
+addi r134,r35,7
+sub r135,r134,r34
+move r136,r135
+lw r137,(r133)
+ble r137,r136,N73
+N74:
+bltz r136,N75
+N76:
+li r138,0
+li r139,4
+addi r140,r136,1
+mul r141,r139,r140
+add r142,r133,r141
+sw r138,(r142)
+j N37
+N39:
+jal $UpperBoundExit$$
+j N29
+N41:
+jal $LowerBoundExit$$
+j N29
+N44:
+jal $UpperBoundExit$$
+j N29
+N46:
+jal $LowerBoundExit$$
+j N29
+N49:
+jal $UpperBoundExit$$
+j N29
+N51:
+jal $LowerBoundExit$$
+j N29
+N53:
+jal $UpperBoundExit$$
+j N29
+N55:
+jal $LowerBoundExit$$
+j N29
+N57:
+jal $UpperBoundExit$$
+j N29
+N59:
+jal $LowerBoundExit$$
+j N29
+N61:
+jal $UpperBoundExit$$
+j N29
+N63:
+jal $LowerBoundExit$$
+j N29
+N65:
+jal $UpperBoundExit$$
+j N29
+N67:
+jal $LowerBoundExit$$
+j N29
+N69:
+jal $UpperBoundExit$$
+j N29
+N71:
+jal $LowerBoundExit$$
+j N29
+N73:
+jal $UpperBoundExit$$
+j N29
+N75:
+jal $LowerBoundExit$$
+j N29
+N29:
+
+LABEL $Main$$
+N77:
+li r143,8
+sw r143,-8($fp)
+addi r144,$fp,-12
+move r145,r144
+lw r146,-8($fp)
+li r147,0
+bltz r146,N78
+N79:
+move $a0,r146
+move $a1,r147
+jal $InitArray$$
+move r148,$v0
+sw r148,(r145)
+addi r149,$fp,-16
+move r150,r149
+lw r151,-8($fp)
+li r152,0
+bltz r151,N80
+N81:
+move $a0,r151
+move $a1,r152
+jal $InitArray$$
+move r153,$v0
+sw r153,(r150)
+addi r154,$fp,-20
+move r155,r154
+lw r156,-8($fp)
+lw r157,-8($fp)
+add r158,r156,r157
+li r159,1
+sub r160,r158,r159
+move r161,r160
+li r162,0
+bltz r161,N82
+N83:
+move $a0,r161
+move $a1,r162
+jal $InitArray$$
+move r163,$v0
+sw r163,(r155)
+addi r164,$fp,-24
+move r165,r164
+lw r166,-8($fp)
+lw r167,-8($fp)
+add r168,r166,r167
+li r169,1
+sub r170,r168,r169
+move r171,r170
+li r172,0
+bltz r171,N84
+N85:
+move $a0,r171
+move $a1,r172
+jal $InitArray$$
+move r173,$v0
+sw r173,(r165)
+li r174,0
+move $a0,$fp
+move $a1,r174
+jal N22
+move $v0,$v0
+j N86
+N78:
+jal $SizeError$$
+j N86
+N80:
+jal $SizeError$$
+j N86
+N82:
+jal $SizeError$$
+j N86
+N84:
+jal $SizeError$$
+j N86
+N86:
+

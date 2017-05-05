@@ -1,0 +1,7 @@
+HW 6 
+Changes made : 
+1. escapes.sml - is completed to handle most of the conditions. 
+2. translate.sml, semant.sml - changes done to handle relop and binop and For loop. Other conditions are not completed.
+3. Some other subtle necessary changes are done.
+
+Code is presently not compiling, next phase I shall fix all these issues and submit. 

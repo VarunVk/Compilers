@@ -1,0 +1,33 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL N2
+N3:
+add r0,r1,r2
+move $v0,r0
+j N4
+N4:
+
+LABEL $Main$$
+N5:
+li r3,1
+li r4,2
+li r5,3
+li r6,4
+li r7,5
+li r8,6
+move $a0,$fp
+move $a1,r3
+move $a2,r4
+move $a3,r5
+sw r6,-12($sp)
+sw r7,-8($sp)
+sw r8,-4($sp)
+jal N2
+move $v0,$v0
+j N6
+N6:
+

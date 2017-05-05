@@ -1,0 +1,36 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL N2
+Nobody"
+
+LABEL N3
+Somebody"
+
+LABEL $Main$$
+N4:
+li r0,8
+move $a0,r0
+jal $Malloc$$
+move r1,$v0
+la r2,N2
+sw r2,0(r1)
+li r3,1000
+sw r3,4(r1)
+move r4,r1
+move r5,r4
+la r6,N1
+beq r5,r6,N5
+N6:
+la r7,N3
+sw r7,0(r5)
+move $v0,r4
+j N7
+N5:
+jal $NullExit$$
+j N7
+N7:
+

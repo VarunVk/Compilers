@@ -1,0 +1,38 @@
+LABEL N0
+ "
+
+LABEL N1
+ "
+
+LABEL N2
+N3:
+beqz r0,N4
+N5:
+move r1,r0
+lw r2,-4($fp)
+li r3,1
+sub r4,r0,r3
+move $a0,r2
+move $a1,r4
+jal N2
+move r5,$v0
+mul r6,r1,r5
+move r7,r6
+N6:
+move $v0,r7
+j N7
+N4:
+li r7,1
+j N6
+N7:
+
+LABEL $Main$$
+N8:
+li r8,10
+move $a0,$fp
+move $a1,r8
+jal N2
+move $v0,$v0
+j N9
+N9:
+
